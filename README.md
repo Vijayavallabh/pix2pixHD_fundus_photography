@@ -51,20 +51,22 @@ Pytorch implementation of our method for high-resolution (e.g. 2048x1024) photor
 
 ## Prerequisites
 - Linux or macOS
-- Python 2 or 3
+- Python 3.12
 - NVIDIA GPU (11G memory or larger) + CUDA cuDNN
 
 ## Getting Started
 ### Installation
-- Install PyTorch and dependencies from http://pytorch.org
-- Install python libraries [dominate](https://github.com/Knio/dominate).
-```bash
-pip install dominate
-```
+- Install `uv`: https://docs.astral.sh/uv/getting-started/installation/
 - Clone this repo:
 ```bash
 git clone https://github.com/NVIDIA/pix2pixHD
 cd pix2pixHD
+```
+- Create and use a Python 3.12 virtual environment with `uv`, then install dependencies from `requirements.txt`:
+```bash
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip install -r requirements.txt
 ```
 
 

@@ -221,3 +221,166 @@ GlobalGenerator(
   warnings.warn(msg)
 /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/models/networks.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:78.)
   fake_tensor = self.Tensor(input.size()).fill_(self.fake_label)
+
+MultiscaleDiscriminator(
+  (scale0_layer0): Sequential(
+    (0): Conv2d(6, 64, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale0_layer1): Sequential(
+    (0): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale0_layer2): Sequential(
+    (0): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale0_layer3): Sequential(
+    (0): Conv2d(256, 512, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+    (1): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale0_layer4): Sequential(
+    (0): Conv2d(512, 1, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+  )
+  (scale1_layer0): Sequential(
+    (0): Conv2d(6, 64, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale1_layer1): Sequential(
+    (0): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale1_layer2): Sequential(
+    (0): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale1_layer3): Sequential(
+    (0): Conv2d(256, 512, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+    (1): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale1_layer4): Sequential(
+    (0): Conv2d(512, 1, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+  )
+  (downsample): AvgPool2d(kernel_size=3, stride=2, padding=[1, 1])
+)
+create web directory ./checkpoints/EYE_aug_cut_fund_no_jitter/web...
+End of epoch 1 / 200 	 Time Taken: 7 sec
+End of epoch 2 / 200 	 Time Taken: 4 sec
+End of epoch 3 / 200 	 Time Taken: 4 sec
+End of epoch 4 / 200 	 Time Taken: 4 sec
+End of epoch 5 / 200 	 Time Taken: 4 sec
+End of epoch 6 / 200 	 Time Taken: 4 sec
+End of epoch 7 / 200 	 Time Taken: 4 sec
+End of epoch 8 / 200 	 Time Taken: 4 sec
+(epoch: 9, iters: 4, time: 0.387) G_GAN: 1.180 G_GAN_Feat: 8.455 G_VGG: 3.855 G_SSIM: 0.729 G_GradVar: 0.002 D_real: 0.486 D_fake: 0.244 
+End of epoch 9 / 200 	 Time Taken: 4 sec
+End of epoch 10 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 10, iters 120
+End of epoch 11 / 200 	 Time Taken: 4 sec
+End of epoch 12 / 200 	 Time Taken: 4 sec
+End of epoch 13 / 200 	 Time Taken: 4 sec
+End of epoch 14 / 200 	 Time Taken: 4 sec
+End of epoch 15 / 200 	 Time Taken: 4 sec
+End of epoch 16 / 200 	 Time Taken: 4 sec
+(epoch: 17, iters: 8, time: 0.390) G_GAN: 1.018 G_GAN_Feat: 6.362 G_VGG: 4.089 G_SSIM: 0.800 G_GradVar: 0.002 D_real: 0.262 D_fake: 0.271 
+End of epoch 17 / 200 	 Time Taken: 4 sec
+End of epoch 18 / 200 	 Time Taken: 4 sec
+End of epoch 19 / 200 	 Time Taken: 4 sec
+End of epoch 20 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 20, iters 240
+End of epoch 21 / 200 	 Time Taken: 4 sec
+End of epoch 22 / 200 	 Time Taken: 4 sec
+End of epoch 23 / 200 	 Time Taken: 4 sec
+End of epoch 24 / 200 	 Time Taken: 4 sec
+(epoch: 25, iters: 12, time: 0.394) G_GAN: 1.288 G_GAN_Feat: 5.796 G_VGG: 3.469 G_SSIM: 0.708 G_GradVar: 0.001 D_real: 0.601 D_fake: 0.235 
+End of epoch 25 / 200 	 Time Taken: 4 sec
+End of epoch 26 / 200 	 Time Taken: 4 sec
+End of epoch 27 / 200 	 Time Taken: 4 sec
+End of epoch 28 / 200 	 Time Taken: 4 sec
+End of epoch 29 / 200 	 Time Taken: 4 sec
+End of epoch 30 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 30, iters 360
+End of epoch 31 / 200 	 Time Taken: 4 sec
+End of epoch 32 / 200 	 Time Taken: 4 sec
+End of epoch 33 / 200 	 Time Taken: 4 sec
+(epoch: 34, iters: 4, time: 0.395) G_GAN: 0.739 G_GAN_Feat: 6.910 G_VGG: 3.979 G_SSIM: 0.772 G_GradVar: 0.001 D_real: 0.241 D_fake: 0.422 
+End of epoch 34 / 200 	 Time Taken: 4 sec
+End of epoch 35 / 200 	 Time Taken: 4 sec
+End of epoch 36 / 200 	 Time Taken: 4 sec
+End of epoch 37 / 200 	 Time Taken: 4 sec
+End of epoch 38 / 200 	 Time Taken: 4 sec
+End of epoch 39 / 200 	 Time Taken: 4 sec
+End of epoch 40 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 40, iters 480
+End of epoch 41 / 200 	 Time Taken: 4 sec
+(epoch: 42, iters: 8, time: 0.394) G_GAN: 0.886 G_GAN_Feat: 7.274 G_VGG: 4.032 G_SSIM: 0.734 G_GradVar: 0.006 D_real: 0.226 D_fake: 0.531 
+End of epoch 42 / 200 	 Time Taken: 4 sec
+End of epoch 43 / 200 	 Time Taken: 4 sec
+End of epoch 44 / 200 	 Time Taken: 4 sec
+End of epoch 45 / 200 	 Time Taken: 4 sec
+End of epoch 46 / 200 	 Time Taken: 4 sec
+End of epoch 47 / 200 	 Time Taken: 4 sec
+End of epoch 48 / 200 	 Time Taken: 4 sec
+End of epoch 49 / 200 	 Time Taken: 4 sec
+(epoch: 50, iters: 12, time: 0.348) G_GAN: 1.109 G_GAN_Feat: 7.054 G_VGG: 4.484 G_SSIM: 0.850 G_GradVar: 0.009 D_real: 0.312 D_fake: 0.582 
+End of epoch 50 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 50, iters 600
+End of epoch 51 / 200 	 Time Taken: 4 sec
+End of epoch 52 / 200 	 Time Taken: 4 sec
+End of epoch 53 / 200 	 Time Taken: 4 sec
+End of epoch 54 / 200 	 Time Taken: 4 sec
+End of epoch 55 / 200 	 Time Taken: 4 sec
+End of epoch 56 / 200 	 Time Taken: 4 sec
+End of epoch 57 / 200 	 Time Taken: 4 sec
+End of epoch 58 / 200 	 Time Taken: 4 sec
+(epoch: 59, iters: 4, time: 0.350) G_GAN: 1.038 G_GAN_Feat: 5.326 G_VGG: 3.683 G_SSIM: 0.718 G_GradVar: 0.001 D_real: 0.386 D_fake: 0.316 
+End of epoch 59 / 200 	 Time Taken: 4 sec
+End of epoch 60 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 60, iters 720
+End of epoch 61 / 200 	 Time Taken: 4 sec
+End of epoch 62 / 200 	 Time Taken: 4 sec
+End of epoch 63 / 200 	 Time Taken: 4 sec
+End of epoch 64 / 200 	 Time Taken: 4 sec
+End of epoch 65 / 200 	 Time Taken: 4 sec
+End of epoch 66 / 200 	 Time Taken: 4 sec
+(epoch: 67, iters: 8, time: 0.389) G_GAN: 0.931 G_GAN_Feat: 6.174 G_VGG: 3.754 G_SSIM: 0.749 G_GradVar: 0.005 D_real: 0.476 D_fake: 0.406 
+End of epoch 67 / 200 	 Time Taken: 4 sec
+End of epoch 68 / 200 	 Time Taken: 4 sec
+End of epoch 69 / 200 	 Time Taken: 4 sec
+End of epoch 70 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 70, iters 840
+End of epoch 71 / 200 	 Time Taken: 4 sec
+End of epoch 72 / 200 	 Time Taken: 4 sec
+End of epoch 73 / 200 	 Time Taken: 4 sec
+End of epoch 74 / 200 	 Time Taken: 4 sec
+(epoch: 75, iters: 12, time: 0.388) G_GAN: 0.600 G_GAN_Feat: 7.593 G_VGG: 4.253 G_SSIM: 0.782 G_GradVar: 0.002 D_real: 0.142 D_fake: 0.737 
+End of epoch 75 / 200 	 Time Taken: 4 sec
+End of epoch 76 / 200 	 Time Taken: 4 sec
+End of epoch 77 / 200 	 Time Taken: 4 sec
+End of epoch 78 / 200 	 Time Taken: 4 sec
+End of epoch 79 / 200 	 Time Taken: 4 sec
+End of epoch 80 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 80, iters 960
+End of epoch 81 / 200 	 Time Taken: 4 sec
+End of epoch 82 / 200 	 Time Taken: 4 sec
+End of epoch 83 / 200 	 Time Taken: 4 sec
+(epoch: 84, iters: 4, time: 0.389) G_GAN: 1.316 G_GAN_Feat: 7.087 G_VGG: 3.793 G_SSIM: 0.667 G_GradVar: 0.001 D_real: 0.214 D_fake: 0.185 
+saving the latest model (epoch 84, total_steps 1000)
+End of epoch 84 / 200 	 Time Taken: 6 sec
+End of epoch 85 / 200 	 Time Taken: 4 sec
+End of epoch 86 / 200 	 Time Taken: 4 sec
+End of epoch 87 / 200 	 Time Taken: 4 sec
+End of epoch 88 / 200 	 Time Taken: 4 sec
+End of epoch 89 / 200 	 Time Taken: 4 sec
+End of epoch 90 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 90, iters 1080
+End of epoch 91 / 200 	 Time Taken: 4 sec
+(epoch: 92, iters: 8, time: 0.390) G_GAN: 0.621 G_GAN_Feat: 7.393 G_VGG: 3.896 G_SSIM: 0.679 G_GradVar: 0.001 D_real: 0.275 D_fake: 0.641 
+End of epoch 92 / 200 	 Time Taken: 4 sec
+End of epoch 93 / 200 	 Time Taken: 4 sec
