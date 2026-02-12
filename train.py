@@ -1,12 +1,20 @@
 import time
 import os
 import numpy as np
+
+configured_tmpdir = os.environ.get('TMPDIR')
+if not configured_tmpdir or len(configured_tmpdir) > 40 or not os.path.isdir(configured_tmpdir):
+    for _tmpdir in ['/tmp', '/var/tmp']:
+        if os.path.isdir(_tmpdir) and os.access(_tmpdir, os.W_OK):
+            os.environ['TMPDIR'] = _tmpdir
+            break
+
 import torch
 from torch.autograd import Variable
 from collections import OrderedDict
 from subprocess import call
-import fractions
-def lcm(a,b): return abs(a * b)/fractions.gcd(a,b) if a and b else 0
+import math
+def lcm(a,b): return abs(a * b)/math.gcd(a,b) if a and b else 0
 
 from options.train_options import TrainOptions
 from data.data_loader import CreateDataLoader
@@ -76,7 +84,13 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
 
         # calculate final loss scalar
         loss_D = (loss_dict['D_fake'] + loss_dict['D_real']) * 0.5
-        loss_G = loss_dict['G_GAN'] + loss_dict.get('G_GAN_Feat',0) + loss_dict.get('G_VGG',0)
+        loss_G = (
+            loss_dict['G_GAN']
+            + loss_dict.get('G_GAN_Feat', 0)
+            + loss_dict.get('G_VGG', 0)
+            + opt.lambda_ssim * loss_dict.get('G_SSIM', 0)
+            + opt.lambda_gradvar * loss_dict.get('G_GradVar', 0)
+        )
 
         ############### Backward Pass ####################
         # update generator weights

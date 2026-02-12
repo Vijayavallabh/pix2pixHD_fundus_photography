@@ -1,5 +1,13 @@
 import torch.utils.data
+import torch
 from data.base_data_loader import BaseDataLoader
+
+
+def _configure_torch_multiprocessing():
+    try:
+        torch.multiprocessing.set_sharing_strategy('file_system')
+    except (AttributeError, RuntimeError):
+        pass
 
 
 def CreateDataset(opt):
@@ -17,6 +25,7 @@ class CustomDatasetDataLoader(BaseDataLoader):
 
     def initialize(self, opt):
         BaseDataLoader.initialize(self, opt)
+        _configure_torch_multiprocessing()
         self.dataset = CreateDataset(opt)
         self.dataloader = torch.utils.data.DataLoader(
             self.dataset,

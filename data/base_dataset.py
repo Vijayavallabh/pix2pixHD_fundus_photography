@@ -1,6 +1,7 @@
 import torch.utils.data as data
 from PIL import Image
 import torchvision.transforms as transforms
+import torchvision.transforms.functional as F
 import numpy as np
 import random
 
@@ -28,15 +29,21 @@ def get_params(opt, size):
     y = random.randint(0, np.maximum(0, new_h - opt.fineSize))
     
     flip = random.random() > 0.5
-    return {'crop_pos': (x, y), 'flip': flip}
+    angle = 0.0
+    if opt.isTrain and not opt.no_augment and opt.aug_rotate > 0:
+        angle = random.uniform(-opt.aug_rotate, opt.aug_rotate)
+    return {'crop_pos': (x, y), 'flip': flip, 'angle': angle}
 
-def get_transform(opt, params, method=Image.BICUBIC, normalize=True):
+def get_transform(opt, params, method=Image.BICUBIC, normalize=True, apply_color_jitter=False):
     transform_list = []
     if 'resize' in opt.resize_or_crop:
         osize = [opt.loadSize, opt.loadSize]
-        transform_list.append(transforms.Scale(osize, method))   
+        transform_list.append(transforms.Resize(osize, method))   
     elif 'scale_width' in opt.resize_or_crop:
         transform_list.append(transforms.Lambda(lambda img: __scale_width(img, opt.loadSize, method)))
+
+    if opt.isTrain and not opt.no_augment and params.get('angle', 0) != 0:
+        transform_list.append(transforms.Lambda(lambda img: __rotate(img, params['angle'], method)))
         
     if 'crop' in opt.resize_or_crop:
         transform_list.append(transforms.Lambda(lambda img: __crop(img, params['crop_pos'], opt.fineSize)))
@@ -49,6 +56,14 @@ def get_transform(opt, params, method=Image.BICUBIC, normalize=True):
 
     if opt.isTrain and not opt.no_flip:
         transform_list.append(transforms.Lambda(lambda img: __flip(img, params['flip'])))
+
+    if apply_color_jitter and opt.isTrain and not opt.no_augment:
+        transform_list.append(transforms.ColorJitter(
+            brightness=opt.aug_brightness,
+            contrast=opt.aug_contrast,
+            saturation=opt.aug_saturation,
+            hue=opt.aug_hue,
+        ))
 
     transform_list += [transforms.ToTensor()]
 
@@ -88,3 +103,8 @@ def __flip(img, flip):
     if flip:
         return img.transpose(Image.FLIP_LEFT_RIGHT)
     return img
+
+def __rotate(img, angle, method=Image.BICUBIC):
+    if angle == 0:
+        return img
+    return img.rotate(angle, resample=method)

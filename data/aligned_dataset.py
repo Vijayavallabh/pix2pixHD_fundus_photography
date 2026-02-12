@@ -49,7 +49,11 @@ class AlignedDataset(BaseDataset):
         if self.opt.isTrain or self.opt.use_encoded_image:
             B_path = self.B_paths[index]   
             B = Image.open(B_path).convert('RGB')
-            transform_B = get_transform(self.opt, params)      
+            transform_B = get_transform(
+                self.opt,
+                params,
+                apply_color_jitter=(self.opt.isTrain and not self.opt.no_augment and self.opt.aug_color_jitter),
+            )
             B_tensor = transform_B(B)
 
         ### if using instance maps        

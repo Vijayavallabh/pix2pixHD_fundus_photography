@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import os
+import torch.nn.functional as F
 from torch.autograd import Variable
 from util.image_pool import ImagePool
 from .base_model import BaseModel
@@ -11,10 +12,39 @@ class Pix2PixHDModel(BaseModel):
         return 'Pix2PixHDModel'
     
     def init_loss_filter(self, use_gan_feat_loss, use_vgg_loss):
-        flags = (True, use_gan_feat_loss, use_vgg_loss, True, True)
-        def loss_filter(g_gan, g_gan_feat, g_vgg, d_real, d_fake):
-            return [l for (l,f) in zip((g_gan,g_gan_feat,g_vgg,d_real,d_fake),flags) if f]
+        flags = (True, use_gan_feat_loss, use_vgg_loss, True, True, True, True)
+        def loss_filter(g_gan, g_gan_feat, g_vgg, g_ssim, g_grad_var, d_real, d_fake):
+            return [l for (l,f) in zip((g_gan, g_gan_feat, g_vgg, g_ssim, g_grad_var, d_real, d_fake), flags) if f]
         return loss_filter
+
+    def compute_ssim_loss(self, fake_image, real_image):
+        c1 = 0.01 ** 2
+        c2 = 0.03 ** 2
+
+        mu_x = F.avg_pool2d(fake_image, kernel_size=3, stride=1, padding=1)
+        mu_y = F.avg_pool2d(real_image, kernel_size=3, stride=1, padding=1)
+
+        sigma_x = F.avg_pool2d(fake_image * fake_image, kernel_size=3, stride=1, padding=1) - mu_x * mu_x
+        sigma_y = F.avg_pool2d(real_image * real_image, kernel_size=3, stride=1, padding=1) - mu_y * mu_y
+        sigma_xy = F.avg_pool2d(fake_image * real_image, kernel_size=3, stride=1, padding=1) - mu_x * mu_y
+
+        numerator = (2 * mu_x * mu_y + c1) * (2 * sigma_xy + c2)
+        denominator = (mu_x * mu_x + mu_y * mu_y + c1) * (sigma_x + sigma_y + c2)
+        ssim_map = numerator / (denominator + 1e-12)
+        return 1.0 - ssim_map.mean()
+
+    def compute_gradient_variance_loss(self, fake_image, real_image):
+        fake_dx = fake_image[:, :, :, 1:] - fake_image[:, :, :, :-1]
+        fake_dy = fake_image[:, :, 1:, :] - fake_image[:, :, :-1, :]
+        real_dx = real_image[:, :, :, 1:] - real_image[:, :, :, :-1]
+        real_dy = real_image[:, :, 1:, :] - real_image[:, :, :-1, :]
+
+        fake_dx_var = torch.var(fake_dx, dim=(2, 3), unbiased=False)
+        fake_dy_var = torch.var(fake_dy, dim=(2, 3), unbiased=False)
+        real_dx_var = torch.var(real_dx, dim=(2, 3), unbiased=False)
+        real_dy_var = torch.var(real_dy, dim=(2, 3), unbiased=False)
+
+        return self.criterionFeat(fake_dx_var, real_dx_var.detach()) + self.criterionFeat(fake_dy_var, real_dy_var.detach())
     
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
@@ -34,7 +64,8 @@ class Pix2PixHDModel(BaseModel):
             netG_input_nc += opt.feat_num                  
         self.netG = networks.define_G(netG_input_nc, opt.output_nc, opt.ngf, opt.netG, 
                                       opt.n_downsample_global, opt.n_blocks_global, opt.n_local_enhancers, 
-                                      opt.n_blocks_local, opt.norm, gpu_ids=self.gpu_ids)        
+                                      opt.n_blocks_local, opt.norm, gpu_ids=self.gpu_ids,
+                                      use_attention=opt.use_attention)        
 
         # Discriminator network
         if self.isTrain:
@@ -78,7 +109,7 @@ class Pix2PixHDModel(BaseModel):
                 
         
             # Names so we can breakout loss
-            self.loss_names = self.loss_filter('G_GAN','G_GAN_Feat','G_VGG','D_real', 'D_fake')
+            self.loss_names = self.loss_filter('G_GAN', 'G_GAN_Feat', 'G_VGG', 'G_SSIM', 'G_GradVar', 'D_real', 'D_fake')
 
             # initialize optimizers
             # optimizer G
@@ -188,9 +219,15 @@ class Pix2PixHDModel(BaseModel):
         loss_G_VGG = 0
         if not self.opt.no_vgg_loss:
             loss_G_VGG = self.criterionVGG(fake_image, real_image) * self.opt.lambda_feat
+
+        # SSIM loss
+        loss_G_SSIM = self.compute_ssim_loss(fake_image, real_image)
+
+        # Gradient variance loss
+        loss_G_GradVar = self.compute_gradient_variance_loss(fake_image, real_image)
         
         # Only return the fake_B image if necessary to save BW
-        return [ self.loss_filter( loss_G_GAN, loss_G_GAN_Feat, loss_G_VGG, loss_D_real, loss_D_fake ), None if not infer else fake_image ]
+        return [ self.loss_filter(loss_G_GAN, loss_G_GAN_Feat, loss_G_VGG, loss_G_SSIM, loss_G_GradVar, loss_D_real, loss_D_fake), None if not infer else fake_image ]
 
     def inference(self, label, inst, image=None):
         # Encode Inputs        

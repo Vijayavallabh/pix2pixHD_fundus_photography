@@ -25,13 +25,14 @@ def get_norm_layer(norm_type='instance'):
     return norm_layer
 
 def define_G(input_nc, output_nc, ngf, netG, n_downsample_global=3, n_blocks_global=9, n_local_enhancers=1, 
-             n_blocks_local=3, norm='instance', gpu_ids=[]):    
+             n_blocks_local=3, norm='instance', gpu_ids=[], use_attention=False):    
     norm_layer = get_norm_layer(norm_type=norm)     
     if netG == 'global':    
-        netG = GlobalGenerator(input_nc, output_nc, ngf, n_downsample_global, n_blocks_global, norm_layer)       
+        netG = GlobalGenerator(input_nc, output_nc, ngf, n_downsample_global, n_blocks_global, norm_layer,
+                               use_attention=use_attention)       
     elif netG == 'local':        
         netG = LocalEnhancer(input_nc, output_nc, ngf, n_downsample_global, n_blocks_global, 
-                                  n_local_enhancers, n_blocks_local, norm_layer)
+                                  n_local_enhancers, n_blocks_local, norm_layer, use_attention=use_attention)
     elif netG == 'encoder':
         netG = Encoder(input_nc, output_nc, ngf, n_downsample_global, norm_layer)
     else:
@@ -128,9 +129,11 @@ class VGGLoss(nn.Module):
 ##############################################################################
 class LocalEnhancer(nn.Module):
     def __init__(self, input_nc, output_nc, ngf=32, n_downsample_global=3, n_blocks_global=9, 
-                 n_local_enhancers=1, n_blocks_local=3, norm_layer=nn.BatchNorm2d, padding_type='reflect'):        
+                 n_local_enhancers=1, n_blocks_local=3, norm_layer=nn.BatchNorm2d, padding_type='reflect',
+                 use_attention=False):        
         super(LocalEnhancer, self).__init__()
         self.n_local_enhancers = n_local_enhancers
+        self.use_attention = use_attention
         
         ###### global generator model #####           
         ngf_global = ngf * (2**n_local_enhancers)
@@ -148,6 +151,8 @@ class LocalEnhancer(nn.Module):
                                 norm_layer(ngf_global * 2), nn.ReLU(True)]
             ### residual blocks
             model_upsample = []
+            if self.use_attention:
+                model_upsample += [SelfAttention(ngf_global * 2)]
             for i in range(n_blocks_local):
                 model_upsample += [ResnetBlock(ngf_global * 2, padding_type=padding_type, norm_layer=norm_layer)]
 
@@ -182,10 +187,11 @@ class LocalEnhancer(nn.Module):
 
 class GlobalGenerator(nn.Module):
     def __init__(self, input_nc, output_nc, ngf=64, n_downsampling=3, n_blocks=9, norm_layer=nn.BatchNorm2d, 
-                 padding_type='reflect'):
+                 padding_type='reflect', use_attention=False):
         assert(n_blocks >= 0)
         super(GlobalGenerator, self).__init__()        
         activation = nn.ReLU(True)        
+        self.use_attention = use_attention
 
         model = [nn.ReflectionPad2d(3), nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0), norm_layer(ngf), activation]
         ### downsample
@@ -198,6 +204,9 @@ class GlobalGenerator(nn.Module):
         mult = 2**n_downsampling
         for i in range(n_blocks):
             model += [ResnetBlock(ngf * mult, padding_type=padding_type, activation=activation, norm_layer=norm_layer)]
+
+        if self.use_attention:
+            model += [SelfAttention(ngf * mult)]
         
         ### upsample         
         for i in range(n_downsampling):
@@ -251,6 +260,28 @@ class ResnetBlock(nn.Module):
     def forward(self, x):
         out = x + self.conv_block(x)
         return out
+
+class SelfAttention(nn.Module):
+    def __init__(self, in_dim):
+        super(SelfAttention, self).__init__()
+        inter_dim = max(1, in_dim // 8)
+        self.query_conv = nn.Conv2d(in_dim, inter_dim, kernel_size=1)
+        self.key_conv = nn.Conv2d(in_dim, inter_dim, kernel_size=1)
+        self.value_conv = nn.Conv2d(in_dim, in_dim, kernel_size=1)
+        self.gamma = nn.Parameter(torch.zeros(1))
+        self.softmax = nn.Softmax(dim=-1)
+
+    def forward(self, x):
+        b, c, h, w = x.size()
+        query = self.query_conv(x).view(b, -1, h * w).permute(0, 2, 1)
+        key = self.key_conv(x).view(b, -1, h * w)
+        energy = torch.bmm(query, key)
+        attention = self.softmax(energy)
+        value = self.value_conv(x).view(b, c, h * w)
+
+        out = torch.bmm(value, attention.permute(0, 2, 1))
+        out = out.view(b, c, h, w)
+        return self.gamma * out + x
 
 class Encoder(nn.Module):
     def __init__(self, input_nc, output_nc, ngf=32, n_downsampling=4, norm_layer=nn.BatchNorm2d):

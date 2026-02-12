@@ -1,5 +1,6 @@
 import argparse
 import os
+import tempfile
 from util import util
 import torch
 
@@ -37,6 +38,15 @@ class BaseOptions():
         self.parser.add_argument('--nThreads', default=2, type=int, help='# threads for loading data')                
         self.parser.add_argument('--max_dataset_size', type=int, default=float("inf"), help='Maximum number of samples allowed per dataset. If the dataset directory contains more than max_dataset_size, only a subset is loaded.')
 
+        # data augmentation
+        self.parser.add_argument('--no_augment', action='store_true', help='if specified, disable data augmentation during training')
+        self.parser.add_argument('--aug_rotate', type=float, default=5.0, help='max rotation degrees for augmentation (0 to disable)')
+        self.parser.add_argument('--aug_color_jitter', action='store_true', help='if specified, enable color jitter augmentation for real images')
+        self.parser.add_argument('--aug_brightness', type=float, default=0.2, help='brightness jitter strength')
+        self.parser.add_argument('--aug_contrast', type=float, default=0.2, help='contrast jitter strength')
+        self.parser.add_argument('--aug_saturation', type=float, default=0.2, help='saturation jitter strength')
+        self.parser.add_argument('--aug_hue', type=float, default=0.02, help='hue jitter strength')
+
         # for displays
         self.parser.add_argument('--display_winsize', type=int, default=512,  help='display window size')
         self.parser.add_argument('--tf_log', action='store_true', help='if specified, use tensorboard logging. Requires tensorflow installed')
@@ -49,6 +59,9 @@ class BaseOptions():
         self.parser.add_argument('--n_blocks_local', type=int, default=3, help='number of residual blocks in the local enhancer network')
         self.parser.add_argument('--n_local_enhancers', type=int, default=1, help='number of local enhancers to use')        
         self.parser.add_argument('--niter_fix_global', type=int, default=0, help='number of epochs that we only train the outmost local enhancer')        
+        self.parser.add_argument('--use_attention', action='store_true', help='if specified, insert self-attention blocks in local/global generators')
+        self.parser.add_argument('--lambda_ssim', type=float, default=1.0, help='weight for SSIM loss term')
+        self.parser.add_argument('--lambda_gradvar', type=float, default=10.0, help='weight for gradient variance loss term')
 
         # for instance-wise features
         self.parser.add_argument('--no_instance', action='store_true', help='if specified, do *not* add instance map as input')        
@@ -62,9 +75,24 @@ class BaseOptions():
 
         self.initialized = True
 
+    def _configure_multiprocessing_tempdir(self):
+        tmpdir_candidates = ['/tmp', '/var/tmp']
+        configured_tmpdir = os.environ.get('TMPDIR')
+
+        if configured_tmpdir and len(configured_tmpdir) <= 40 and os.path.isdir(configured_tmpdir) and os.access(configured_tmpdir, os.W_OK):
+            tempfile.tempdir = configured_tmpdir
+            return
+
+        for tmpdir in tmpdir_candidates:
+            if os.path.isdir(tmpdir) and os.access(tmpdir, os.W_OK):
+                os.environ['TMPDIR'] = tmpdir
+                tempfile.tempdir = tmpdir
+                return
+
     def parse(self, save=True):
         if not self.initialized:
             self.initialize()
+        self._configure_multiprocessing_tempdir()
         self.opt = self.parser.parse_args()
         self.opt.isTrain = self.isTrain   # train or test
 
@@ -78,6 +106,7 @@ class BaseOptions():
         # set gpu ids
         if len(self.opt.gpu_ids) > 0:
             torch.cuda.set_device(self.opt.gpu_ids[0])
+
 
         args = vars(self.opt)
 

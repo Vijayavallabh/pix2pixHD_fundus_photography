@@ -7,6 +7,14 @@ from models.models import create_model
 import util.util as util
 from util.visualizer import Visualizer
 from util import html
+
+configured_tmpdir = os.environ.get('TMPDIR')
+if not configured_tmpdir or len(configured_tmpdir) > 40 or not os.path.isdir(configured_tmpdir):
+    for _tmpdir in ['/tmp', '/var/tmp']:
+        if os.path.isdir(_tmpdir) and os.access(_tmpdir, os.W_OK):
+            os.environ['TMPDIR'] = _tmpdir
+            break
+
 import torch
 
 opt = TestOptions().parse(save=False)

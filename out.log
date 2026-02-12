@@ -1,0 +1,374 @@
+nohup: ignoring input
+------------ Options -------------
+batchSize: 1
+beta1: 0.5
+checkpoints_dir: ./checkpoints
+continue_train: False
+data_type: 32
+dataroot: ./datasets/eye
+debug: False
+display_freq: 100
+display_winsize: 512
+feat_num: 3
+fineSize: 2048
+fp16: False
+gpu_ids: [0]
+input_nc: 3
+instance_feat: False
+isTrain: True
+label_feat: False
+label_nc: 0
+lambda_feat: 10.0
+loadSize: 2048
+load_features: False
+load_pretrain: 
+local_rank: 0
+lr: 0.0002
+max_dataset_size: 8
+model: pix2pixHD
+nThreads: 2
+n_blocks_global: 9
+n_blocks_local: 3
+n_clusters: 10
+n_downsample_E: 4
+n_downsample_global: 4
+n_layers_D: 3
+n_local_enhancers: 1
+name: EYE
+ndf: 64
+nef: 16
+netG: global
+ngf: 64
+niter: 50
+niter_decay: 50
+niter_fix_global: 0
+no_flip: False
+no_ganFeat_loss: False
+no_html: False
+no_instance: True
+no_lsgan: False
+no_vgg_loss: False
+norm: instance
+num_D: 2
+output_nc: 3
+phase: train
+pool_size: 0
+print_freq: 100
+resize_or_crop: resize_and_crop
+save_epoch_freq: 10
+save_latest_freq: 1000
+serial_batches: False
+tf_log: False
+use_dropout: False
+verbose: False
+which_epoch: latest
+-------------- End ----------------
+CustomDatasetDataLoader
+dataset [AlignedDataset] was created
+#training images = 8
+GlobalGenerator(
+  (model): Sequential(
+    (0): ReflectionPad2d((3, 3, 3, 3))
+    (1): Conv2d(3, 64, kernel_size=(7, 7), stride=(1, 1))
+    (2): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (3): ReLU(inplace=True)
+    (4): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (5): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (6): ReLU(inplace=True)
+    (7): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (8): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (9): ReLU(inplace=True)
+    (10): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (11): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (12): ReLU(inplace=True)
+    (13): Conv2d(512, 1024, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (14): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (15): ReLU(inplace=True)
+    (16): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (17): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (18): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (19): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (20): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (21): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (22): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (23): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (24): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (25): ConvTranspose2d(1024, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (26): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (27): ReLU(inplace=True)
+    (28): ConvTranspose2d(512, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (29): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (30): ReLU(inplace=True)
+    (31): ConvTranspose2d(256, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (32): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (33): ReLU(inplace=True)
+    (34): ConvTranspose2d(128, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (35): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (36): ReLU(inplace=True)
+    (37): ReflectionPad2d((3, 3, 3, 3))
+    (38): Conv2d(64, 3, kernel_size=(7, 7), stride=(1, 1))
+    (39): Tanh()
+  )
+)
+MultiscaleDiscriminator(
+  (scale0_layer0): Sequential(
+    (0): Conv2d(6, 64, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale0_layer1): Sequential(
+    (0): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale0_layer2): Sequential(
+    (0): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale0_layer3): Sequential(
+    (0): Conv2d(256, 512, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+    (1): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale0_layer4): Sequential(
+    (0): Conv2d(512, 1, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+  )
+  (scale1_layer0): Sequential(
+    (0): Conv2d(6, 64, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale1_layer1): Sequential(
+    (0): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale1_layer2): Sequential(
+    (0): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(2, 2))
+    (1): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale1_layer3): Sequential(
+    (0): Conv2d(256, 512, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+    (1): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (2): LeakyReLU(negative_slope=0.2, inplace=True)
+  )
+  (scale1_layer4): Sequential(
+    (0): Conv2d(512, 1, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+  )
+  (downsample): AvgPool2d(kernel_size=3, stride=2, padding=[1, 1])
+)/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG19_Weights.IMAGENET1K_V1`. You can also use `weights=VGG19_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+
+create web directory ./checkpoints/EYE/web...
+/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/models/networks.py:95: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at /pytorch/torch/csrc/tensor/python_tensor.cpp:78.)
+  fake_tensor = self.Tensor(input.size()).fill_(self.fake_label)
+End of epoch 1 / 100 	 Time Taken: 8 sec
+End of epoch 2 / 100 	 Time Taken: 3 sec
+End of epoch 3 / 100 	 Time Taken: 3 sec
+End of epoch 4 / 100 	 Time Taken: 3 sec
+End of epoch 5 / 100 	 Time Taken: 3 sec
+End of epoch 6 / 100 	 Time Taken: 3 sec
+End of epoch 7 / 100 	 Time Taken: 3 sec
+End of epoch 8 / 100 	 Time Taken: 3 sec
+End of epoch 9 / 100 	 Time Taken: 3 sec
+End of epoch 10 / 100 	 Time Taken: 3 sec
+saving the model at the end of epoch 10, iters 80
+End of epoch 11 / 100 	 Time Taken: 3 sec
+End of epoch 12 / 100 	 Time Taken: 3 sec
+(epoch: 13, iters: 4, time: 0.525) G_GAN: 0.907 G_GAN_Feat: 7.185 G_VGG: 4.488 D_real: 0.303 D_fake: 0.687 
+End of epoch 13 / 100 	 Time Taken: 3 sec
+End of epoch 14 / 100 	 Time Taken: 3 sec
+End of epoch 15 / 100 	 Time Taken: 3 sec
+End of epoch 16 / 100 	 Time Taken: 3 sec
+End of epoch 17 / 100 	 Time Taken: 3 sec
+End of epoch 18 / 100 	 Time Taken: 3 sec
+End of epoch 19 / 100 	 Time Taken: 3 sec
+End of epoch 20 / 100 	 Time Taken: 3 sec
+saving the model at the end of epoch 20, iters 160
+End of epoch 21 / 100 	 Time Taken: 3 sec
+End of epoch 22 / 100 	 Time Taken: 3 sec
+End of epoch 23 / 100 	 Time Taken: 3 sec
+End of epoch 24 / 100 	 Time Taken: 3 sec
+(epoch: 25, iters: 8, time: 0.477) G_GAN: 0.878 G_GAN_Feat: 5.015 G_VGG: 3.502 D_real: 0.415 D_fake: 0.412 
+End of epoch 25 / 100 	 Time Taken: 3 sec
+End of epoch 26 / 100 	 Time Taken: 3 sec
+End of epoch 27 / 100 	 Time Taken: 3 sec
+End of epoch 28 / 100 	 Time Taken: 3 sec
+End of epoch 29 / 100 	 Time Taken: 3 sec
+End of epoch 30 / 100 	 Time Taken: 3 sec
+saving the model at the end of epoch 30, iters 240
+End of epoch 31 / 100 	 Time Taken: 3 sec
+End of epoch 32 / 100 	 Time Taken: 3 sec
+End of epoch 33 / 100 	 Time Taken: 3 sec
+End of epoch 34 / 100 	 Time Taken: 3 sec
+End of epoch 35 / 100 	 Time Taken: 3 sec
+End of epoch 36 / 100 	 Time Taken: 3 sec
+End of epoch 37 / 100 	 Time Taken: 3 sec
+(epoch: 38, iters: 4, time: 0.479) G_GAN: 0.907 G_GAN_Feat: 6.530 G_VGG: 3.626 D_real: 0.424 D_fake: 0.416 
+End of epoch 38 / 100 	 Time Taken: 3 sec
+End of epoch 39 / 100 	 Time Taken: 3 sec
+End of epoch 40 / 100 	 Time Taken: 3 sec
+saving the model at the end of epoch 40, iters 320
+End of epoch 41 / 100 	 Time Taken: 3 sec
+End of epoch 42 / 100 	 Time Taken: 3 sec
+End of epoch 43 / 100 	 Time Taken: 3 sec
+End of epoch 44 / 100 	 Time Taken: 3 sec
+End of epoch 45 / 100 	 Time Taken: 3 sec
+End of epoch 46 / 100 	 Time Taken: 3 sec
+End of epoch 47 / 100 	 Time Taken: 3 sec
+End of epoch 48 / 100 	 Time Taken: 3 sec
+End of epoch 49 / 100 	 Time Taken: 3 sec
+(epoch: 50, iters: 8, time: 0.478) G_GAN: 1.202 G_GAN_Feat: 5.835 G_VGG: 2.843 D_real: 0.419 D_fake: 0.353 
+End of epoch 50 / 100 	 Time Taken: 3 sec
+saving the model at the end of epoch 50, iters 400
+End of epoch 51 / 100 	 Time Taken: 3 sec
+End of epoch 52 / 100 	 Time Taken: 3 sec
+End of epoch 53 / 100 	 Time Taken: 3 sec
+End of epoch 54 / 100 	 Time Taken: 3 sec
+End of epoch 55 / 100 	 Time Taken: 3 sec
+End of epoch 56 / 100 	 Time Taken: 3 sec
+End of epoch 57 / 100 	 Time Taken: 3 sec
+End of epoch 58 / 100 	 Time Taken: 3 sec
+End of epoch 59 / 100 	 Time Taken: 3 sec
+End of epoch 60 / 100 	 Time Taken: 3 sec
+saving the model at the end of epoch 60, iters 480
+End of epoch 61 / 100 	 Time Taken: 3 sec
+End of epoch 62 / 100 	 Time Taken: 3 sec
+(epoch: 63, iters: 4, time: 0.476) G_GAN: 0.653 G_GAN_Feat: 4.859 G_VGG: 2.753 D_real: 0.353 D_fake: 0.404 
+End of epoch 63 / 100 	 Time Taken: 3 sec
+End of epoch 64 / 100 	 Time Taken: 3 sec
+End of epoch 65 / 100 	 Time Taken: 3 sec
+End of epoch 66 / 100 	 Time Taken: 3 sec
+End of epoch 67 / 100 	 Time Taken: 3 sec
+End of epoch 68 / 100 	 Time Taken: 3 sec
+End of epoch 69 / 100 	 Time Taken: 3 sec
+End of epoch 70 / 100 	 Time Taken: 3 sec
+saving the model at the end of epoch 70, iters 560
+End of epoch 71 / 100 	 Time Taken: 3 sec
+End of epoch 72 / 100 	 Time Taken: 3 sec
+End of epoch 73 / 100 	 Time Taken: 3 sec
+End of epoch 74 / 100 	 Time Taken: 3 sec
+(epoch: 75, iters: 8, time: 0.478) G_GAN: 0.578 G_GAN_Feat: 5.881 G_VGG: 2.972 D_real: 0.234 D_fake: 0.458 
+End of epoch 75 / 100 	 Time Taken: 3 sec
+End of epoch 76 / 100 	 Time Taken: 3 sec
+End of epoch 77 / 100 	 Time Taken: 3 sec
+End of epoch 78 / 100 	 Time Taken: 3 sec
+End of epoch 79 / 100 	 Time Taken: 3 sec
+End of epoch 80 / 100 	 Time Taken: 3 sec
+saving the model at the end of epoch 80, iters 640
+End of epoch 81 / 100 	 Time Taken: 3 sec
+End of epoch 82 / 100 	 Time Taken: 3 sec
+End of epoch 83 / 100 	 Time Taken: 3 sec
+End of epoch 84 / 100 	 Time Taken: 3 sec
+End of epoch 85 / 100 	 Time Taken: 3 sec
+End of epoch 86 / 100 	 Time Taken: 3 sec
+End of epoch 87 / 100 	 Time Taken: 3 sec
+(epoch: 88, iters: 4, time: 0.480) G_GAN: 0.944 G_GAN_Feat: 6.626 G_VGG: 3.051 D_real: 0.501 D_fake: 0.229 
+End of epoch 88 / 100 	 Time Taken: 3 sec
+End of epoch 89 / 100 	 Time Taken: 3 sec
+End of epoch 90 / 100 	 Time Taken: 3 sec
+saving the model at the end of epoch 90, iters 720
+End of epoch 91 / 100 	 Time Taken: 3 sec
+End of epoch 92 / 100 	 Time Taken: 3 sec
+End of epoch 93 / 100 	 Time Taken: 3 sec
+End of epoch 94 / 100 	 Time Taken: 3 sec
+End of epoch 95 / 100 	 Time Taken: 3 sec
+End of epoch 96 / 100 	 Time Taken: 3 sec
+End of epoch 97 / 100 	 Time Taken: 3 sec
+End of epoch 98 / 100 	 Time Taken: 3 sec
+End of epoch 99 / 100 	 Time Taken: 3 sec
+(epoch: 100, iters: 8, time: 0.480) G_GAN: 1.007 G_GAN_Feat: 4.799 G_VGG: 3.027 D_real: 0.554 D_fake: 0.214 
+End of epoch 100 / 100 	 Time Taken: 4 sec
+saving the model at the end of epoch 100, iters 800
