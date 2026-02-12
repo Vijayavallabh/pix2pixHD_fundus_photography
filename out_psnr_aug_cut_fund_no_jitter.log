@@ -39,7 +39,7 @@ n_clusters: 10
 n_downsample_E: 4
 n_downsample_global: 4
 n_local_enhancers: 1
-name: EYE_aug_cut_fund
+name: EYE_aug_cut_fund_no_jitter
 nef: 16
 netG: global
 ngf: 64
@@ -206,8 +206,8 @@ GlobalGenerator(
 )/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/models/pix2pixHD_model.py:159: UserWarning: volatile was removed and now has no effect. Use `with torch.no_grad():` instead.
   input_label = Variable(input_label, volatile=infer)
 
-[test] [1] PSNR: 16.0442 | ./datasets/eye_cut/test_A/TMC07_TES_OD.jpg
-[test] [2] PSNR: 17.7339 | ./datasets/eye_cut/test_A/TMC07_TES_OS.jpg
-[test] [3] PSNR: 14.9364 | ./datasets/eye_cut/test_A/TMC08_TES_OD.jpg
-[test] [4] PSNR: 17.4758 | ./datasets/eye_cut/test_A/TMC08_TES_OS.jpg
-[test] Average PSNR over 4 images: 16.5475
+[test] [1] PSNR: 16.1264 | ./datasets/eye_cut/test_A/TMC07_TES_OD.jpg
+[test] [2] PSNR: 16.1528 | ./datasets/eye_cut/test_A/TMC07_TES_OS.jpg
+[test] [3] PSNR: 14.7050 | ./datasets/eye_cut/test_A/TMC08_TES_OD.jpg
+[test] [4] PSNR: 16.9445 | ./datasets/eye_cut/test_A/TMC08_TES_OS.jpg
+[test] Average PSNR over 4 images: 15.9822
