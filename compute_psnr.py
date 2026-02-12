@@ -24,6 +24,15 @@ def _psnr(pred: torch.Tensor, target: torch.Tensor) -> float:
     return 10.0 * math.log10(1.0 / mse)
 
 
+def _shape_hw_chw(t: torch.Tensor) -> str:
+    """Pretty-print tensor shape as HxW for CHW tensors."""
+    if t.dim() == 3:
+        return f"{t.shape[1]}x{t.shape[2]}"
+    if t.dim() >= 2:
+        return f"{t.shape[-2]}x{t.shape[-1]}"
+    return str(tuple(t.shape))
+
+
 def _compute_psnr_for_phase(opt, phase: str) -> None:
     opt.phase = phase
     opt.nThreads = max(0, int(opt.nThreads))
@@ -42,6 +51,8 @@ def _compute_psnr_for_phase(opt, phase: str) -> None:
         model.type(torch.uint8)
 
     psnrs: List[float] = []
+    compared_count = 0
+    mismatched_count = 0
 
     for i, data in enumerate(dataset):
         if i >= opt.how_many:
@@ -67,17 +78,40 @@ def _compute_psnr_for_phase(opt, phase: str) -> None:
         pred = _tensor_to_01(generated.data[0].float().cpu())
         target = _tensor_to_01(target_tensor[0].float().cpu())
 
-        psnr_val = _psnr(pred, target)
-        psnrs.append(psnr_val)
+        same_shape = pred.shape == target.shape
 
         img_path = data['path'][0] if isinstance(data['path'], list) else data['path']
-        print(f"[{phase}] [{i+1}] PSNR: {psnr_val:.4f} | {img_path}")
+        pred_hw = _shape_hw_chw(pred)
+        target_hw = _shape_hw_chw(target)
+
+        if not same_shape:
+            mismatched_count += 1
+            print(
+                f"[{phase}] [{i+1}] SIZE_MISMATCH | gen={pred_hw} target={target_hw} | {img_path}"
+            )
+            continue
+
+        psnr_val = _psnr(pred, target)
+        psnrs.append(psnr_val)
+        compared_count += 1
+        print(
+            f"[{phase}] [{i+1}] SIZE_MATCH | gen={pred_hw} target={target_hw} | "
+            f"PSNR: {psnr_val:.4f} | {img_path}"
+        )
+
+    print(
+        f"[{phase}] Compared: {compared_count}, Skipped(size mismatch): {mismatched_count}, "
+        f"Total seen: {compared_count + mismatched_count}"
+    )
 
     if psnrs:
         avg = sum(psnrs) / len(psnrs)
         print(f"[{phase}] Average PSNR over {len(psnrs)} images: {avg:.4f}")
     else:
-        print(f"[{phase}] No images evaluated. Check your {phase}_* folders and options.")
+        print(
+            f"[{phase}] No PSNR computed. Check your {phase}_* folders/options, "
+            "or ensure generated and target image sizes match."
+        )
 
 
 def main() -> None:

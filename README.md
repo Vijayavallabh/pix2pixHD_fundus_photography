@@ -154,4 +154,19 @@ python s.py
 
 This preprocessing step ensures clean, watermark-free images for training and testing the pix2pixHD model on the eye dataset.
 
+## Additional Image Preprocessing Script (s_1.py)
+
+`s_1.py` is an enhanced version of `s.py` with additional vertical trimming functionality. It performs the same black border cropping and watermark removal as `s.py`, but also includes:
+
+- **Vertical Trimming**: For images in `train_A` and `test_A` folders, it removes 110 pixels from the top and 115 pixels from the bottom after cropping black borders. This helps remove unwanted header/footer regions specific to the A-type images.
+
+Processed images are saved to `datasets/eye_cropped_1`, maintaining the same folder structure.
+
+To run the script:
+```bash
+python s_1.py
+```
+
+Use this script when additional vertical cropping is needed for the A-type images in the dataset.
+
 

@@ -11,7 +11,7 @@ batchSize: 1
 checkpoints_dir: ./checkpoints
 cluster_path: features_clustered_010.npy
 data_type: 32
-dataroot: ./datasets/eye_cut
+dataroot: ./datasets/eye_cropped_1
 display_winsize: 512
 engine: None
 export_onnx: None
@@ -39,7 +39,7 @@ n_clusters: 10
 n_downsample_E: 4
 n_downsample_global: 4
 n_local_enhancers: 1
-name: EYE_aug_cut_fund
+name: EYE_aug_fund_no_jitter_1
 nef: 16
 netG: global
 ngf: 64
@@ -206,9 +206,9 @@ GlobalGenerator(
 )/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/models/pix2pixHD_model.py:159: UserWarning: volatile was removed and now has no effect. Use `with torch.no_grad():` instead.
   input_label = Variable(input_label, volatile=infer)
 
-[test] [1] SIZE_MATCH | gen=1024x1024 target=1024x1024 | PSNR: 16.0442 | ./datasets/eye_cut/test_A/TMC07_TES_OD.jpg
-[test] [2] SIZE_MATCH | gen=1024x1024 target=1024x1024 | PSNR: 17.7339 | ./datasets/eye_cut/test_A/TMC07_TES_OS.jpg
-[test] [3] SIZE_MATCH | gen=1024x1024 target=1024x1024 | PSNR: 14.9364 | ./datasets/eye_cut/test_A/TMC08_TES_OD.jpg
-[test] [4] SIZE_MATCH | gen=1024x1024 target=1024x1024 | PSNR: 17.4758 | ./datasets/eye_cut/test_A/TMC08_TES_OS.jpg
+[test] [1] SIZE_MATCH | gen=1024x1024 target=1024x1024 | PSNR: 18.0799 | ./datasets/eye_cropped_1/test_A/TMC07_TES_OD.jpg
+[test] [2] SIZE_MATCH | gen=1024x1024 target=1024x1024 | PSNR: 16.7512 | ./datasets/eye_cropped_1/test_A/TMC07_TES_OS.jpg
+[test] [3] SIZE_MATCH | gen=1024x1024 target=1024x1024 | PSNR: 16.0715 | ./datasets/eye_cropped_1/test_A/TMC08_TES_OD.jpg
+[test] [4] SIZE_MATCH | gen=1024x1024 target=1024x1024 | PSNR: 16.4574 | ./datasets/eye_cropped_1/test_A/TMC08_TES_OS.jpg
 [test] Compared: 4, Skipped(size mismatch): 0, Total seen: 4
-[test] Average PSNR over 4 images: 16.5475
+[test] Average PSNR over 4 images: 16.8400
