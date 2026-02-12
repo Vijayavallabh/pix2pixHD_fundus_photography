@@ -18,7 +18,7 @@ if not configured_tmpdir or len(configured_tmpdir) > 40 or not os.path.isdir(con
 import torch
 
 opt = TestOptions().parse(save=False)
-opt.nThreads = 1   # test code only supports nThreads = 1
+opt.nThreads = max(0, int(opt.nThreads))
 opt.batchSize = 1  # test code only supports batchSize = 1
 opt.serial_batches = True  # no shuffle
 opt.no_flip = True  # no flip

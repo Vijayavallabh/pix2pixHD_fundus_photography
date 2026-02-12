@@ -26,7 +26,7 @@ def _psnr(pred: torch.Tensor, target: torch.Tensor) -> float:
 
 def _compute_psnr_for_phase(opt, phase: str) -> None:
     opt.phase = phase
-    opt.nThreads = 1
+    opt.nThreads = max(0, int(opt.nThreads))
     opt.batchSize = 1
     opt.serial_batches = True
     opt.no_flip = True
