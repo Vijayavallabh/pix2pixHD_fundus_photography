@@ -138,23 +138,20 @@ CUDA_VISIBLE_DEVICES=0 nohup python test.py --dataroot ./datasets/eye_cut --name
 CUDA_VISIBLE_DEVICES=0 nohup python compute_psnr.py --phases test --dataroot ./datasets/eye_cut --name EYE_aug_cut_fund --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1 --use_attention --nThreads 0 > out_psnr_aug_cut_fund.log 2>&1 &
 ```
 
-## More Training/Test Details
-- Flags: see `options/train_options.py` and `options/base_options.py` for all the training flags; see `options/test_options.py` and `options/base_options.py` for all the test flags.
-- Instance map: we take in both label maps and instance maps as input. If you don't want to use instance maps, please specify the flag `--no_instance`.
+## Image Preprocessing Script (s.py)
 
+`s.py` is a custom Python script designed to preprocess images in the `datasets/eye` folder for the fundus photography dataset. It performs the following operations:
 
-## Citation
+- **Black Border Cropping**: Removes black borders from all images in `train_A`, `train_B`, `test_A`, and `test_B` subfolders by detecting and cropping uniform black pixel regions at the edges.
+- **Watermark Removal**: For images in `train_B` and `test_B`, it blacks out specific patches in the bottom-left and bottom-right corners to remove watermarks. The patch sizes are dynamically calculated based on image dimensions, with the bottom-right patch having a reduced height (scaled by 0.65) and different width scales (left: 0.55, right: 0.65) to precisely target watermark locations without affecting the main image content.
 
-If you find this useful for your research, please use the following.
+Processed images are saved to a new directory `datasets/eye_cropped`, preserving the original folder structure.
 
-```
-@inproceedings{wang2018pix2pixHD,
-  title={High-Resolution Image Synthesis and Semantic Manipulation with Conditional GANs},
-  author={Ting-Chun Wang and Ming-Yu Liu and Jun-Yan Zhu and Andrew Tao and Jan Kautz and Bryan Catanzaro},  
-  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
-  year={2018}
-}
+To run the script:
+```bash
+python s.py
 ```
 
-## Acknowledgments
-This code borrows heavily from [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
+This preprocessing step ensures clean, watermark-free images for training and testing the pix2pixHD model on the eye dataset.
+
+
