@@ -59,8 +59,8 @@ Pytorch implementation of our method for high-resolution (e.g. 2048x1024) photor
 - Install `uv`: https://docs.astral.sh/uv/getting-started/installation/
 - Clone this repo:
 ```bash
-git clone https://github.com/NVIDIA/pix2pixHD
-cd pix2pixHD
+git clone https://github.com/Vijayavallabh/pix2pixHD_fundus_photography
+cd pix2pixHD_fundus_photography
 ```
 - Create and use a Python 3.12 virtual environment with `uv`, then install dependencies from `requirements.txt`:
 ```bash
