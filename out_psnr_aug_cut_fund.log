@@ -1,0 +1,285 @@
+nohup: ignoring input
+------------ Options -------------
+aspect_ratio: 1.0
+aug_brightness: 0.2
+aug_color_jitter: False
+aug_contrast: 0.2
+aug_hue: 0.02
+aug_rotate: 5.0
+aug_saturation: 0.2
+batchSize: 1
+checkpoints_dir: ./checkpoints
+cluster_path: features_clustered_010.npy
+data_type: 32
+dataroot: ./datasets/eye_cut
+display_winsize: 512
+engine: None
+export_onnx: None
+feat_num: 3
+fineSize: 1024
+fp16: False
+gpu_ids: [0]
+how_many: 50
+input_nc: 3
+instance_feat: False
+isTrain: False
+label_feat: False
+label_nc: 0
+lambda_gradvar: 10.0
+lambda_ssim: 1.0
+loadSize: 1024
+load_features: False
+local_rank: 0
+max_dataset_size: inf
+model: pix2pixHD
+nThreads: 0
+n_blocks_global: 9
+n_blocks_local: 3
+n_clusters: 10
+n_downsample_E: 4
+n_downsample_global: 4
+n_local_enhancers: 1
+name: EYE_aug_cut_fund
+nef: 16
+netG: global
+ngf: 64
+niter_fix_global: 0
+no_augment: False
+no_flip: False
+no_instance: True
+norm: instance
+ntest: inf
+onnx: None
+output_nc: 3
+phase: test
+resize_or_crop: resize_and_crop
+results_dir: ./results/
+serial_batches: False
+tf_log: False
+use_attention: True
+use_dropout: False
+use_encoded_image: False
+verbose: False
+which_epoch: latest
+-------------- End ----------------
+CustomDatasetDataLoader
+dataset [AlignedDataset] was created
+GlobalGenerator(
+  (model): Sequential(
+    (0): ReflectionPad2d((3, 3, 3, 3))
+    (1): Conv2d(3, 64, kernel_size=(7, 7), stride=(1, 1))
+    (2): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (3): ReLU(inplace=True)
+    (4): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (5): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (6): ReLU(inplace=True)
+    (7): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (8): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (9): ReLU(inplace=True)
+    (10): Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (11): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (12): ReLU(inplace=True)
+    (13): Conv2d(512, 1024, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+    (14): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (15): ReLU(inplace=True)
+    (16): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (17): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (18): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (19): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (20): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (21): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (22): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (23): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (24): ResnetBlock(
+      (conv_block): Sequential(
+        (0): ReflectionPad2d((1, 1, 1, 1))
+        (1): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (2): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        (3): ReLU(inplace=True)
+        (4): ReflectionPad2d((1, 1, 1, 1))
+        (5): Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1))
+        (6): InstanceNorm2d(1024, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+      )
+    )
+    (25): SelfAttention(
+      (query_conv): Conv2d(1024, 128, kernel_size=(1, 1), stride=(1, 1))
+      (key_conv): Conv2d(1024, 128, kernel_size=(1, 1), stride=(1, 1))
+      (value_conv): Conv2d(1024, 1024, kernel_size=(1, 1), stride=(1, 1))
+      (softmax): Softmax(dim=-1)
+    )
+    (26): ConvTranspose2d(1024, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (27): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (28): ReLU(inplace=True)
+    (29): ConvTranspose2d(512, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (30): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (31): ReLU(inplace=True)
+    (32): ConvTranspose2d(256, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (33): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (34): ReLU(inplace=True)
+    (35): ConvTranspose2d(128, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), output_padding=(1, 1))
+    (36): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+    (37): ReLU(inplace=True)
+    (38): ReflectionPad2d((3, 3, 3, 3))
+    (39): Conv2d(64, 3, kernel_size=(7, 7), stride=(1, 1))
+    (40): Tanh()
+  )
+)
+Traceback (most recent call last):
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/compute_psnr.py", line 108, in <module>
+    main()
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/compute_psnr.py", line 104, in main
+    _compute_psnr_for_phase(opt, phase)
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/compute_psnr.py", line 46, in _compute_psnr_for_phase
+    for i, data in enumerate(dataset):
+                   ^^^^^^^^^^^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1548, in _next_data
+    return self._process_data(data, worker_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1586, in _process_data
+    data.reraise()
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/_utils.py", line 775, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 57, in fetch
+    return self.collate_fn(data)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/collate.py", line 401, in default_collate
+    return collate(batch, collate_fn_map=default_collate_fn_map)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/collate.py", line 172, in collate
+    key: collate(
+         ^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/collate.py", line 155, in collate
+    return collate_fn_map[elem_type](batch, collate_fn_map=collate_fn_map)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/collate.py", line 273, in collate_tensor_fn
+    storage = elem._typed_storage()._new_shared(numel, device=elem.device)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/storage.py", line 1201, in _new_shared
+    untyped_storage = torch.UntypedStorage._new_shared(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/storage.py", line 412, in _new_shared
+    return cls._new_using_filename_cpu(size)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: torch_shm_manager at "/home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/bin/torch_shm_manager": could not generate a random directory for manager socket
+Exception raised from main at /pytorch/torch/lib/libshm/manager.cpp:100 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x7f21e8b6bfdd in /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/bin/../lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, char const*) + 0x69 (0x7f21e8b01637 in /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/bin/../lib/libc10.so)
+frame #2: main + 0xef4 (0x403784 in torch_shm_manager)
+frame #3: <unknown function> + 0x29d90 (0x7f21e859ad90 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #4: __libc_start_main + 0x80 (0x7f21e859ae40 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #5: _start + 0x2e (0x403bce in torch_shm_manager)
+
+Exception raised from start_manager at /pytorch/torch/lib/libshm/core.cpp:62 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x7fb678572fdd in /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0xc3 (0x7fb678508561 in /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/lib/libc10.so)
+frame #2: <unknown function> + 0x5499 (0x7fb6789a5499 in /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/lib/libshm.so)
+frame #3: THManagedMapAllocatorInit::THManagedMapAllocatorInit(char const*, char const*) + 0x75 (0x7fb6789a56a5 in /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/lib/libshm.so)
+frame #4: THManagedMapAllocator::THManagedMapAllocator(char const*, char const*, int, unsigned long) + 0x20 (0x7fb6789a5a40 in /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/lib/libshm.so)
+frame #5: THManagedMapAllocator::makeDataPtr(char const*, char const*, int, unsigned long) + 0x3e (0x7fb6789a5aae in /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/lib/libshm.so)
+frame #6: <unknown function> + 0x791f7c (0x7fb5c4f4cf7c in /home/prachh/source_code/iccv/markup/Jithamanyu_dont_open/Vijayavallabh/pix2pixHD/.venv/lib/python3.12/site-packages/torch/lib/libtorch_python.so)
+frame #7: python() [0x18061dd]
+<omitting python frames>
+frame #9: python() [0x185deaa]
+frame #10: python() [0x18027ab]
+frame #12: python() [0x185deaa]
+frame #13: python() [0x18027ab]
+frame #16: python() [0x1850904]
+frame #18: python() [0x1866746]
+frame #21: python() [0x18b0982]
+frame #22: python() [0x19c2a3f]
+frame #25: python() [0x19c3004]
+frame #26: python() [0x19c2f18]
+frame #28: python() [0x1957dfa]
+frame #29: python() [0x1957bed]
+frame #30: <unknown function> + 0x29d90 (0x7fb679411d90 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #31: __libc_start_main + 0x80 (0x7fb679411e40 in /lib/x86_64-linux-gnu/libc.so.6)
+
+

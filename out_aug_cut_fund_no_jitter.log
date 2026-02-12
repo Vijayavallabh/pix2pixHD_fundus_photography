@@ -384,3 +384,135 @@ End of epoch 91 / 200 	 Time Taken: 4 sec
 (epoch: 92, iters: 8, time: 0.390) G_GAN: 0.621 G_GAN_Feat: 7.393 G_VGG: 3.896 G_SSIM: 0.679 G_GradVar: 0.001 D_real: 0.275 D_fake: 0.641 
 End of epoch 92 / 200 	 Time Taken: 4 sec
 End of epoch 93 / 200 	 Time Taken: 4 sec
+End of epoch 94 / 200 	 Time Taken: 4 sec
+End of epoch 95 / 200 	 Time Taken: 4 sec
+End of epoch 96 / 200 	 Time Taken: 4 sec
+End of epoch 97 / 200 	 Time Taken: 4 sec
+End of epoch 98 / 200 	 Time Taken: 4 sec
+End of epoch 99 / 200 	 Time Taken: 4 sec
+(epoch: 100, iters: 12, time: 0.357) G_GAN: 1.391 G_GAN_Feat: 7.895 G_VGG: 3.403 G_SSIM: 0.711 G_GradVar: 0.002 D_real: 0.272 D_fake: 0.213 
+End of epoch 100 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 100, iters 1200
+End of epoch 101 / 200 	 Time Taken: 4 sec
+End of epoch 102 / 200 	 Time Taken: 4 sec
+End of epoch 103 / 200 	 Time Taken: 4 sec
+End of epoch 104 / 200 	 Time Taken: 4 sec
+End of epoch 105 / 200 	 Time Taken: 4 sec
+End of epoch 106 / 200 	 Time Taken: 4 sec
+End of epoch 107 / 200 	 Time Taken: 4 sec
+End of epoch 108 / 200 	 Time Taken: 4 sec
+(epoch: 109, iters: 4, time: 0.350) G_GAN: 0.536 G_GAN_Feat: 7.111 G_VGG: 3.594 G_SSIM: 0.672 G_GradVar: 0.004 D_real: 0.291 D_fake: 0.593 
+End of epoch 109 / 200 	 Time Taken: 4 sec
+End of epoch 110 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 110, iters 1320
+End of epoch 111 / 200 	 Time Taken: 4 sec
+End of epoch 112 / 200 	 Time Taken: 4 sec
+End of epoch 113 / 200 	 Time Taken: 4 sec
+End of epoch 114 / 200 	 Time Taken: 4 sec
+End of epoch 115 / 200 	 Time Taken: 4 sec
+End of epoch 116 / 200 	 Time Taken: 4 sec
+(epoch: 117, iters: 8, time: 0.389) G_GAN: 0.774 G_GAN_Feat: 7.600 G_VGG: 3.808 G_SSIM: 0.711 G_GradVar: 0.003 D_real: 0.231 D_fake: 0.363 
+End of epoch 117 / 200 	 Time Taken: 4 sec
+End of epoch 118 / 200 	 Time Taken: 4 sec
+End of epoch 119 / 200 	 Time Taken: 4 sec
+End of epoch 120 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 120, iters 1440
+End of epoch 121 / 200 	 Time Taken: 4 sec
+End of epoch 122 / 200 	 Time Taken: 4 sec
+End of epoch 123 / 200 	 Time Taken: 4 sec
+End of epoch 124 / 200 	 Time Taken: 4 sec
+(epoch: 125, iters: 12, time: 0.389) G_GAN: 0.240 G_GAN_Feat: 5.593 G_VGG: 3.458 G_SSIM: 0.681 G_GradVar: 0.001 D_real: 0.190 D_fake: 1.319 
+End of epoch 125 / 200 	 Time Taken: 4 sec
+End of epoch 126 / 200 	 Time Taken: 4 sec
+End of epoch 127 / 200 	 Time Taken: 4 sec
+End of epoch 128 / 200 	 Time Taken: 4 sec
+End of epoch 129 / 200 	 Time Taken: 4 sec
+End of epoch 130 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 130, iters 1560
+End of epoch 131 / 200 	 Time Taken: 4 sec
+End of epoch 132 / 200 	 Time Taken: 4 sec
+End of epoch 133 / 200 	 Time Taken: 4 sec
+(epoch: 134, iters: 4, time: 0.396) G_GAN: 1.578 G_GAN_Feat: 7.598 G_VGG: 4.093 G_SSIM: 0.760 G_GradVar: 0.006 D_real: 0.233 D_fake: 0.058 
+End of epoch 134 / 200 	 Time Taken: 4 sec
+End of epoch 135 / 200 	 Time Taken: 4 sec
+End of epoch 136 / 200 	 Time Taken: 4 sec
+End of epoch 137 / 200 	 Time Taken: 4 sec
+End of epoch 138 / 200 	 Time Taken: 4 sec
+End of epoch 139 / 200 	 Time Taken: 4 sec
+End of epoch 140 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 140, iters 1680
+End of epoch 141 / 200 	 Time Taken: 4 sec
+(epoch: 142, iters: 8, time: 0.394) G_GAN: 1.022 G_GAN_Feat: 7.674 G_VGG: 3.894 G_SSIM: 0.760 G_GradVar: 0.002 D_real: 0.129 D_fake: 0.241 
+End of epoch 142 / 200 	 Time Taken: 4 sec
+End of epoch 143 / 200 	 Time Taken: 4 sec
+End of epoch 144 / 200 	 Time Taken: 4 sec
+End of epoch 145 / 200 	 Time Taken: 4 sec
+End of epoch 146 / 200 	 Time Taken: 4 sec
+End of epoch 147 / 200 	 Time Taken: 4 sec
+End of epoch 148 / 200 	 Time Taken: 4 sec
+End of epoch 149 / 200 	 Time Taken: 4 sec
+(epoch: 150, iters: 12, time: 0.358) G_GAN: 1.393 G_GAN_Feat: 5.913 G_VGG: 3.168 G_SSIM: 0.643 G_GradVar: 0.001 D_real: 0.813 D_fake: 0.110 
+End of epoch 150 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 150, iters 1800
+End of epoch 151 / 200 	 Time Taken: 4 sec
+End of epoch 152 / 200 	 Time Taken: 4 sec
+End of epoch 153 / 200 	 Time Taken: 4 sec
+End of epoch 154 / 200 	 Time Taken: 4 sec
+End of epoch 155 / 200 	 Time Taken: 4 sec
+End of epoch 156 / 200 	 Time Taken: 4 sec
+End of epoch 157 / 200 	 Time Taken: 4 sec
+End of epoch 158 / 200 	 Time Taken: 4 sec
+(epoch: 159, iters: 4, time: 0.353) G_GAN: 0.772 G_GAN_Feat: 6.998 G_VGG: 3.826 G_SSIM: 0.713 G_GradVar: 0.001 D_real: 0.393 D_fake: 0.346 
+End of epoch 159 / 200 	 Time Taken: 4 sec
+End of epoch 160 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 160, iters 1920
+End of epoch 161 / 200 	 Time Taken: 4 sec
+End of epoch 162 / 200 	 Time Taken: 4 sec
+End of epoch 163 / 200 	 Time Taken: 4 sec
+End of epoch 164 / 200 	 Time Taken: 4 sec
+End of epoch 165 / 200 	 Time Taken: 4 sec
+End of epoch 166 / 200 	 Time Taken: 4 sec
+(epoch: 167, iters: 8, time: 0.397) G_GAN: 0.937 G_GAN_Feat: 7.043 G_VGG: 3.625 G_SSIM: 0.759 G_GradVar: 0.001 D_real: 0.409 D_fake: 0.234 
+saving the latest model (epoch 167, total_steps 2000)
+End of epoch 167 / 200 	 Time Taken: 6 sec
+End of epoch 168 / 200 	 Time Taken: 4 sec
+End of epoch 169 / 200 	 Time Taken: 4 sec
+End of epoch 170 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 170, iters 2040
+End of epoch 171 / 200 	 Time Taken: 4 sec
+End of epoch 172 / 200 	 Time Taken: 4 sec
+End of epoch 173 / 200 	 Time Taken: 4 sec
+End of epoch 174 / 200 	 Time Taken: 4 sec
+(epoch: 175, iters: 12, time: 0.387) G_GAN: 1.076 G_GAN_Feat: 7.313 G_VGG: 4.325 G_SSIM: 0.748 G_GradVar: 0.002 D_real: 0.231 D_fake: 0.178 
+End of epoch 175 / 200 	 Time Taken: 4 sec
+End of epoch 176 / 200 	 Time Taken: 4 sec
+End of epoch 177 / 200 	 Time Taken: 4 sec
+End of epoch 178 / 200 	 Time Taken: 4 sec
+End of epoch 179 / 200 	 Time Taken: 4 sec
+End of epoch 180 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 180, iters 2160
+End of epoch 181 / 200 	 Time Taken: 4 sec
+End of epoch 182 / 200 	 Time Taken: 4 sec
+End of epoch 183 / 200 	 Time Taken: 4 sec
+(epoch: 184, iters: 4, time: 0.387) G_GAN: 0.671 G_GAN_Feat: 5.976 G_VGG: 3.588 G_SSIM: 0.678 G_GradVar: 0.002 D_real: 0.239 D_fake: 0.394 
+End of epoch 184 / 200 	 Time Taken: 4 sec
+End of epoch 185 / 200 	 Time Taken: 4 sec
+End of epoch 186 / 200 	 Time Taken: 4 sec
+End of epoch 187 / 200 	 Time Taken: 4 sec
+End of epoch 188 / 200 	 Time Taken: 4 sec
+End of epoch 189 / 200 	 Time Taken: 4 sec
+End of epoch 190 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 190, iters 2280
+End of epoch 191 / 200 	 Time Taken: 4 sec
+(epoch: 192, iters: 8, time: 0.395) G_GAN: 1.274 G_GAN_Feat: 5.976 G_VGG: 3.456 G_SSIM: 0.610 G_GradVar: 0.002 D_real: 0.153 D_fake: 0.110 
+End of epoch 192 / 200 	 Time Taken: 4 sec
+End of epoch 193 / 200 	 Time Taken: 4 sec
+End of epoch 194 / 200 	 Time Taken: 4 sec
+End of epoch 195 / 200 	 Time Taken: 4 sec
+End of epoch 196 / 200 	 Time Taken: 4 sec
+End of epoch 197 / 200 	 Time Taken: 4 sec
+End of epoch 198 / 200 	 Time Taken: 4 sec
+End of epoch 199 / 200 	 Time Taken: 4 sec
+(epoch: 200, iters: 12, time: 0.352) G_GAN: 0.968 G_GAN_Feat: 6.021 G_VGG: 3.170 G_SSIM: 0.665 G_GradVar: 0.002 D_real: 0.055 D_fake: 0.211 
+End of epoch 200 / 200 	 Time Taken: 4 sec
+saving the model at the end of epoch 200, iters 2400
