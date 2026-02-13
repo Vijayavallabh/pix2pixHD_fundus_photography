@@ -96,6 +96,10 @@ python train.py --name label2city_512p
 ```
 - To view training results, please checkout intermediate results in `./checkpoints/label2city_512p/web/index.html`.
 If you have tensorflow installed, you can see tensorboard logs in `./checkpoints/label2city_512p/logs` by adding `--tf_log` to the training scripts.
+- At the end of training, additional monitoring artifacts are saved to `./checkpoints/<run_name>/metrics/`:
+  - `loss_history.csv` (structured loss history including `G_GAN`, `G_GAN_Feat`, `G_VGG`, `G_SSIM`, `G_GradVar`, `D_real`, `D_fake`, plus derived metrics)
+  - `loss_curves.png` and `d_balance.png` (loss and discriminator-balance plots)
+  - `training_summary.txt` and `best_step.json` (heuristic best-step summary and metadata)
 
 ### Multi-GPU training
 - Train a model using multiple GPUs (`bash ./scripts/train_512p_multigpu.sh`):

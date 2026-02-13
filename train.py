@@ -153,3 +153,13 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
     ### linearly decay learning rate after certain iterations
     if epoch > opt.niter:
         model.module.update_learning_rate()
+
+try:
+    visualizer.save_training_plots()
+except Exception as e:
+    print('Failed to generate training plots: %s' % str(e))
+
+try:
+    visualizer.save_training_summary()
+except Exception as e:
+    print('Failed to generate training summary: %s' % str(e))

@@ -14,7 +14,7 @@ def get_image_resolutions(folder_path):
     return resolutions
 
 # Example usage
-folder_path = 'datasets/eye/train_B'  # Replace with actual folder path
+folder_path = 'datasets/eye_cropped/train_B'  # Replace with actual folder path
 resolutions = get_image_resolutions(folder_path)
 for filename, size in resolutions.items():
     print(f"{filename}: {size[0]}x{size[1]}")
