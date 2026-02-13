@@ -52,7 +52,7 @@ class AlignedDataset(BaseDataset):
             transform_B = get_transform(
                 self.opt,
                 params,
-                apply_color_jitter=(self.opt.isTrain and not self.opt.no_augment and self.opt.aug_color_jitter),
+                apply_intensity_augment=(self.opt.isTrain and not self.opt.no_augment),
             )
             B_tensor = transform_B(B)
 

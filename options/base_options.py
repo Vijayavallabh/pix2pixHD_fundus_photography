@@ -34,18 +34,15 @@ class BaseOptions():
         self.parser.add_argument('--dataroot', type=str, default='./datasets/cityscapes/') 
         self.parser.add_argument('--resize_or_crop', type=str, default='scale_width', help='scaling and cropping of images at load time [resize_and_crop|crop|scale_width|scale_width_and_crop]')
         self.parser.add_argument('--serial_batches', action='store_true', help='if true, takes images in order to make batches, otherwise takes them randomly')        
-        self.parser.add_argument('--no_flip', action='store_true', help='if specified, do not flip the images for data argumentation') 
+        self.parser.add_argument('--no_flip', action='store_true', help='if specified, disable horizontal and vertical flip augmentation') 
         self.parser.add_argument('--nThreads', default=2, type=int, help='# threads for loading data')                
         self.parser.add_argument('--max_dataset_size', type=int, default=float("inf"), help='Maximum number of samples allowed per dataset. If the dataset directory contains more than max_dataset_size, only a subset is loaded.')
 
         # data augmentation
         self.parser.add_argument('--no_augment', action='store_true', help='if specified, disable data augmentation during training')
         self.parser.add_argument('--aug_rotate', type=float, default=5.0, help='max rotation degrees for augmentation (0 to disable)')
-        self.parser.add_argument('--aug_color_jitter', action='store_true', help='if specified, enable color jitter augmentation for real images')
-        self.parser.add_argument('--aug_brightness', type=float, default=0.2, help='brightness jitter strength')
-        self.parser.add_argument('--aug_contrast', type=float, default=0.2, help='contrast jitter strength')
-        self.parser.add_argument('--aug_saturation', type=float, default=0.2, help='saturation jitter strength')
-        self.parser.add_argument('--aug_hue', type=float, default=0.02, help='hue jitter strength')
+        self.parser.add_argument('--aug_contrast', type=float, default=0.2, help='max relative contrast adjustment strength (0 to disable)')
+        self.parser.add_argument('--aug_noise_std', type=float, default=0.02, help='Gaussian noise std on [0,1] image tensor (0 to disable)')
 
         # for displays
         self.parser.add_argument('--display_winsize', type=int, default=512,  help='display window size')

@@ -126,7 +126,7 @@ In our test case, it trains about 80% faster with AMP on a Volta machine.
 # Example commands for `datasets/eye_cut`
 - Train:
 ```bash
-CUDA_VISIBLE_DEVICES=0 nohup python train.py --dataroot ./datasets/eye_cut --aug_color_jitter --name EYE_aug_cut_fund --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1  --max_dataset_size 12 --use_attention --nThreads 0 > out_aug_cut_fund.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0 nohup python train.py --dataroot ./datasets/eye_cut --name EYE_aug_cut_fund --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1  --max_dataset_size 12 --use_attention --nThreads 0 > out_aug_cut_fund.log 2>&1 &
 ```
 - Test:
 ```bash
@@ -136,6 +136,8 @@ CUDA_VISIBLE_DEVICES=0 nohup python test.py --dataroot ./datasets/eye_cut --name
 ```bash
 CUDA_VISIBLE_DEVICES=0 nohup python compute_psnr.py --phases test --dataroot ./datasets/eye_cut --name EYE_aug_cut_fund --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1 --use_attention --nThreads 0 > out_psnr_aug_cut_fund.log 2>&1 &
 ```
+
+Training augmentation is restricted to: horizontal flip, vertical flip, rotation (`--aug_rotate`), contrast adjustment (`--aug_contrast`), and Gaussian noise injection (`--aug_noise_std`). Use `--no_augment` to disable augmentation entirely.
 
 ## Image Preprocessing Script (s.py)
 
