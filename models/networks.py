@@ -307,18 +307,12 @@ class SelfAttention(nn.Module):
 
     def forward(self, x):
         b, c, h, w = x.size()
-        if h * w > self.max_tokens:
-            pooled_side = int(self.max_tokens ** 0.5)
-            x_attn = F.adaptive_avg_pool2d(x, (pooled_side, pooled_side))
-        else:
-            x_attn = x
-
-        _, _, h_attn, w_attn = x_attn.size()
-        query = self.query_conv(x_attn).view(b, -1, h_attn * w_attn).permute(0, 2, 1)
-        key = self.key_conv(x_attn).view(b, -1, h_attn * w_attn)
+        _, _, h_attn, w_attn = x.size()
+        query = self.query_conv(x).view(b, -1, h_attn * w_attn).permute(0, 2, 1)
+        key = self.key_conv(x).view(b, -1, h_attn * w_attn)
         energy = torch.bmm(query, key)
         attention = self.softmax(energy)
-        value = self.value_conv(x_attn).view(b, c, h_attn * w_attn)
+        value = self.value_conv(x).view(b, c, h_attn * w_attn)
 
         out = torch.bmm(value, attention.permute(0, 2, 1))
         out = out.view(b, c, h_attn, w_attn)

@@ -41,8 +41,10 @@ def get_params(opt, size):
         contrast_factor = random.uniform(low, high)
 
     noise_std = 0.0
+    noise_seed = None
     if opt.isTrain and not opt.no_augment and opt.aug_noise_std > 0:
         noise_std = opt.aug_noise_std
+        noise_seed = random.randint(0, 2**31 - 1)
 
     return {
         'crop_pos': (x, y),
@@ -51,6 +53,7 @@ def get_params(opt, size):
         'angle': angle,
         'contrast_factor': contrast_factor,
         'noise_std': noise_std,
+        'noise_seed': noise_seed,
     }
 
 def get_transform(opt, params, method=Image.BICUBIC, normalize=True, apply_intensity_augment=False):
@@ -86,7 +89,11 @@ def get_transform(opt, params, method=Image.BICUBIC, normalize=True, apply_inten
             ))
         if params.get('noise_std', 0.0) > 0:
             transform_list.append(transforms.Lambda(
-                lambda tensor: __add_gaussian_noise(tensor, params['noise_std'])
+                lambda tensor: __add_gaussian_noise(
+                    tensor,
+                    params['noise_std'],
+                    params.get('noise_seed')
+                )
             ))
 
     if normalize:
@@ -139,6 +146,16 @@ def __rotate(img, angle, method=Image.BICUBIC):
 def __adjust_contrast(tensor, factor):
     return F.adjust_contrast(tensor, factor)
 
-def __add_gaussian_noise(tensor, std):
-    noise = torch.randn_like(tensor) * std
+def __add_gaussian_noise(tensor, std, seed=None):
+    if seed is None:
+        noise = torch.randn_like(tensor) * std
+    else:
+        generator = torch.Generator(device=tensor.device)
+        generator.manual_seed(int(seed))
+        noise = torch.randn(
+            tensor.size(),
+            generator=generator,
+            device=tensor.device,
+            dtype=tensor.dtype,
+        ) * std
     return torch.clamp(tensor + noise, 0.0, 1.0)

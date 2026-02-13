@@ -14,7 +14,7 @@ def create_model(opt):
     if opt.verbose:
         print("model [%s] was created" % (model.name()))
 
-    if opt.isTrain and len(opt.gpu_ids) and not opt.fp16:
+    if opt.isTrain and len(opt.gpu_ids) and not opt.fp16 and not getattr(opt, 'is_distributed', False):
         model = torch.nn.DataParallel(model, device_ids=opt.gpu_ids)
 
     return model

@@ -92,6 +92,9 @@ class BaseOptions():
         self._configure_multiprocessing_tempdir()
         self.opt = self.parser.parse_args()
         self.opt.isTrain = self.isTrain   # train or test
+        self.opt.world_size = int(os.environ.get('WORLD_SIZE', '1'))
+        self.opt.rank = int(os.environ.get('RANK', '0'))
+        self.opt.is_distributed = self.opt.world_size > 1
 
         str_ids = self.opt.gpu_ids.split(',')
         self.opt.gpu_ids = []
@@ -102,7 +105,15 @@ class BaseOptions():
         
         # set gpu ids
         if len(self.opt.gpu_ids) > 0:
-            torch.cuda.set_device(self.opt.gpu_ids[0])
+            if self.opt.is_distributed:
+                if self.opt.local_rank < len(self.opt.gpu_ids):
+                    selected_gpu = self.opt.gpu_ids[self.opt.local_rank]
+                else:
+                    selected_gpu = self.opt.local_rank
+                torch.cuda.set_device(selected_gpu)
+                self.opt.gpu_ids = [selected_gpu]
+            else:
+                torch.cuda.set_device(self.opt.gpu_ids[0])
 
 
         args = vars(self.opt)
