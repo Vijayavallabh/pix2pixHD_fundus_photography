@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import functools
 from torch.autograd import Variable
 import numpy as np
@@ -265,6 +266,7 @@ class SelfAttention(nn.Module):
     def __init__(self, in_dim):
         super(SelfAttention, self).__init__()
         inter_dim = max(1, in_dim // 8)
+        self.max_tokens = 4096
         self.query_conv = nn.Conv2d(in_dim, inter_dim, kernel_size=1)
         self.key_conv = nn.Conv2d(in_dim, inter_dim, kernel_size=1)
         self.value_conv = nn.Conv2d(in_dim, in_dim, kernel_size=1)
@@ -273,14 +275,23 @@ class SelfAttention(nn.Module):
 
     def forward(self, x):
         b, c, h, w = x.size()
-        query = self.query_conv(x).view(b, -1, h * w).permute(0, 2, 1)
-        key = self.key_conv(x).view(b, -1, h * w)
+        if h * w > self.max_tokens:
+            pooled_side = int(self.max_tokens ** 0.5)
+            x_attn = F.adaptive_avg_pool2d(x, (pooled_side, pooled_side))
+        else:
+            x_attn = x
+
+        _, _, h_attn, w_attn = x_attn.size()
+        query = self.query_conv(x_attn).view(b, -1, h_attn * w_attn).permute(0, 2, 1)
+        key = self.key_conv(x_attn).view(b, -1, h_attn * w_attn)
         energy = torch.bmm(query, key)
         attention = self.softmax(energy)
-        value = self.value_conv(x).view(b, c, h * w)
+        value = self.value_conv(x_attn).view(b, c, h_attn * w_attn)
 
         out = torch.bmm(value, attention.permute(0, 2, 1))
-        out = out.view(b, c, h, w)
+        out = out.view(b, c, h_attn, w_attn)
+        if h_attn != h or w_attn != w:
+            out = F.interpolate(out, size=(h, w), mode='bilinear', align_corners=False)
         return self.gamma * out + x
 
 class Encoder(nn.Module):

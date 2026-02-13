@@ -48,12 +48,21 @@ print('#training images = %d' % dataset_size)
 
 model = create_model(opt)
 visualizer = Visualizer(opt)
+
+def unwrap_model(m):
+    return m.module if isinstance(m, torch.nn.DataParallel) else m
+
 if opt.fp16:    
-    from apex import amp
-    model, [optimizer_G, optimizer_D] = amp.initialize(model, [model.optimizer_G, model.optimizer_D], opt_level='O1')             
-    model = torch.nn.DataParallel(model, device_ids=opt.gpu_ids)
+    from torch.cuda.amp import GradScaler, autocast
+    scaler = GradScaler()
+    base_model = unwrap_model(model)
+    optimizer_G, optimizer_D = base_model.optimizer_G, base_model.optimizer_D
+    if not isinstance(model, torch.nn.DataParallel):
+        model = torch.nn.DataParallel(model, device_ids=opt.gpu_ids)
 else:
-    optimizer_G, optimizer_D = model.module.optimizer_G, model.module.optimizer_D
+    scaler = None
+    base_model = unwrap_model(model)
+    optimizer_G, optimizer_D = base_model.optimizer_G, base_model.optimizer_D
 
 total_steps = (start_epoch-1) * dataset_size + epoch_iter
 
@@ -75,12 +84,17 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         save_fake = total_steps % opt.display_freq == display_delta
 
         ############## Forward Pass ######################
-        losses, generated = model(Variable(data['label']), Variable(data['inst']), 
-            Variable(data['image']), Variable(data['feat']), infer=save_fake)
+        if opt.fp16:
+            with autocast():
+                losses, generated = model(Variable(data['label']), Variable(data['inst']), 
+                    Variable(data['image']), Variable(data['feat']), infer=save_fake)
+        else:
+            losses, generated = model(Variable(data['label']), Variable(data['inst']), 
+                Variable(data['image']), Variable(data['feat']), infer=save_fake)
 
         # sum per device losses
         losses = [ torch.mean(x) if not isinstance(x, int) else x for x in losses ]
-        loss_dict = dict(zip(model.module.loss_names, losses))
+        loss_dict = dict(zip(unwrap_model(model).loss_names, losses))
 
         # calculate final loss scalar
         loss_D = (loss_dict['D_fake'] + loss_dict['D_real']) * 0.5
@@ -96,18 +110,26 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         # update generator weights
         optimizer_G.zero_grad()
         if opt.fp16:                                
-            with amp.scale_loss(loss_G, optimizer_G) as scaled_loss: scaled_loss.backward()                
+            scaler.scale(loss_G).backward()                
         else:
             loss_G.backward()          
-        optimizer_G.step()
+        if opt.fp16:
+            scaler.step(optimizer_G)
+            scaler.update()
+        else:
+            optimizer_G.step()
 
         # update discriminator weights
         optimizer_D.zero_grad()
         if opt.fp16:                                
-            with amp.scale_loss(loss_D, optimizer_D) as scaled_loss: scaled_loss.backward()                
+            scaler.scale(loss_D).backward()                
         else:
             loss_D.backward()        
-        optimizer_D.step()        
+        if opt.fp16:
+            scaler.step(optimizer_D)
+            scaler.update()
+        else:
+            optimizer_D.step()        
 
         ############## Display results and errors ##########
         ### print out errors
@@ -128,7 +150,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         ### save latest model
         if total_steps % opt.save_latest_freq == save_delta:
             print('saving the latest model (epoch %d, total_steps %d)' % (epoch, total_steps))
-            model.module.save('latest')            
+            unwrap_model(model).save('latest')            
             np.savetxt(iter_path, (epoch, epoch_iter), delimiter=',', fmt='%d')
 
         if epoch_iter >= dataset_size:
@@ -142,17 +164,17 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
     ### save model for this epoch
     if epoch % opt.save_epoch_freq == 0:
         print('saving the model at the end of epoch %d, iters %d' % (epoch, total_steps))        
-        model.module.save('latest')
-        model.module.save(epoch)
+        unwrap_model(model).save('latest')
+        unwrap_model(model).save(epoch)
         np.savetxt(iter_path, (epoch+1, 0), delimiter=',', fmt='%d')
 
     ### instead of only training the local enhancer, train the entire network after certain iterations
     if (opt.niter_fix_global != 0) and (epoch == opt.niter_fix_global):
-        model.module.update_fixed_params()
+        unwrap_model(model).update_fixed_params()
 
     ### linearly decay learning rate after certain iterations
     if epoch > opt.niter:
-        model.module.update_learning_rate()
+        unwrap_model(model).update_learning_rate()
 
 try:
     visualizer.save_training_plots()

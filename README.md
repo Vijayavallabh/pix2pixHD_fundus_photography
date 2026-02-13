@@ -123,18 +123,22 @@ In our test case, it trains about 80% faster with AMP on a Volta machine.
 - If you don't have instance maps or don't want to use them, please specify `--no_instance`.
 - The default setting for preprocessing is `scale_width`, which will scale the width of all training images to `opt.loadSize` (1024) while keeping the aspect ratio. If you want a different setting, please change it by using the `--resize_or_crop` option. For example, `scale_width_and_crop` first resizes the image to have width `opt.loadSize` and then does random cropping of size `(opt.fineSize, opt.fineSize)`. `crop` skips the resizing step and only performs random cropping. If you don't want any preprocessing, please specify `none`, which will do nothing other than making sure the image is divisible by 32.
 
-# Example commands for `datasets/eye_cut`
+# Example commands for `datasets/eye_cropped_1`
 - Train:
 ```bash
-CUDA_VISIBLE_DEVICES=0 nohup python train.py --dataroot ./datasets/eye_cut --name EYE_aug_cut_fund --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1  --max_dataset_size 12 --use_attention --nThreads 0 > out_aug_cut_fund.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0 nohup python train.py --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1  --max_dataset_size 12 --use_attention --nThreads 0 > out_fund_train_1.log 2>&1&
+```
+- Train [Finetune with 2k Resolution]
+```bash
+CUDA_VISIBLE_DEVICES=3,5 nohup python -m torch.distributed.launch train.py --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1_2k --load_pretrain checkpoints/EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 2048 --fineSize 2048 --batchSize 2 --niter 50 --niter_decay 50 --niter_fix_global 10 --netG local --ngf 32 --num_D 3 --max_dataset_size 12 --use_attention --gpu_ids 0,1 > out_fund_train_1_2k.log 2>&1&
 ```
 - Test:
 ```bash
-CUDA_VISIBLE_DEVICES=0 nohup python test.py --dataroot ./datasets/eye_cut --name EYE_aug_cut_fund --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1  --use_attention --nThreads 0 > out_test_aug_cut_fund.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0 nohup python test.py --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1  --use_attention --nThreads 0 > out_test_fund_1.log 2>&1 &
 ```
 - Compute PSNR:
 ```bash
-CUDA_VISIBLE_DEVICES=0 nohup python compute_psnr.py --phases test --dataroot ./datasets/eye_cut --name EYE_aug_cut_fund --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1 --use_attention --nThreads 0 > out_psnr_aug_cut_fund.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0 nohup python compute_psnr.py --phases test --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1 --use_attention --nThreads 0 > out_psnr_fund_1.log 2>&1 &
 ```
 
 Training augmentation is restricted to: horizontal flip, vertical flip, rotation (`--aug_rotate`), contrast adjustment (`--aug_contrast`), and Gaussian noise injection (`--aug_noise_std`). Use `--no_augment` to disable augmentation entirely.
