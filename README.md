@@ -1,7 +1,3 @@
-<img src='imgs/teaser_720.gif' align="right" width=360>
-
-<br><br><br><br>
-
 # pix2pixHD_fundus_photography
 
 
@@ -64,58 +60,6 @@ source .venv/bin/activate
 uv pip install -r requirements.txt
 ```
 
-
-### Testing
-- A few example Cityscapes test images are included in the `datasets` folder.
-- Please download the pre-trained Cityscapes model from [here](https://drive.google.com/file/d/1OR-2aEPHOxZKuoOV34DvQxreqGCSLcW9/view?usp=drive_link) (google drive link), and put it under `./checkpoints/label2city_1024p/`
-- Test the model (`bash ./scripts/test_1024p.sh`):
-```bash
-#!./scripts/test_1024p.sh
-python test.py --name label2city_1024p --netG local --ngf 32 --resize_or_crop none
-```
-The test results will be saved to a html file here: `./results/label2city_1024p/test_latest/index.html`.
-
-More example scripts can be found in the `scripts` directory.
-
-
-### Dataset
-- We use the Cityscapes dataset. To train a model on the full dataset, please download it from the [official website](https://www.cityscapes-dataset.com/) (registration required).
-After downloading, please put it under the `datasets` folder in the same way the example images are provided.
-
-
-### Training
-- Train a model at 1024 x 512 resolution (`bash ./scripts/train_512p.sh`):
-```bash
-#!./scripts/train_512p.sh
-python train.py --name label2city_512p
-```
-- To view training results, please checkout intermediate results in `./checkpoints/label2city_512p/web/index.html`.
-If you have tensorflow installed, you can see tensorboard logs in `./checkpoints/label2city_512p/logs` by adding `--tf_log` to the training scripts.
-- At the end of training, additional monitoring artifacts are saved to `./checkpoints/<run_name>/metrics/`:
-  - `loss_history.csv` (structured loss history including `G_GAN`, `G_GAN_Feat`, `G_VGG`, `G_SSIM`, `G_GradVar`, `D_real`, `D_fake`, plus derived metrics)
-  - `loss_curves.png` and `d_balance.png` (loss and discriminator-balance plots)
-  - `training_summary.txt` and `best_step.json` (heuristic best-step summary and metadata)
-
-### Multi-GPU training
-- Train a model using multiple GPUs (`bash ./scripts/train_512p_multigpu.sh`):
-```bash
-#!./scripts/train_512p_multigpu.sh
-python train.py --name label2city_512p --batchSize 8 --gpu_ids 0,1,2,3,4,5,6,7
-```
-Note: this is not tested and we trained our model using single GPU only. Please use at your own discretion.
-
-### Training with Automatic Mixed Precision (AMP) for faster speed
-- To train with mixed precision support, please first install apex from: https://github.com/NVIDIA/apex
-- You can then train the model by adding `--fp16`. For example,
-```bash
-#!./scripts/train_512p_fp16.sh
-python -m torch.distributed.launch train.py --name label2city_512p --fp16
-```
-In our test case, it trains about 80% faster with AMP on a Volta machine.
-
-### Training at full resolution
-- To train the images at full resolution (2048 x 1024) requires a GPU with 24G memory (`bash ./scripts/train_1024p_24G.sh`), or 16G memory if using mixed precision (AMP).
-- If only GPUs with 12G memory are available, please use the 12G script (`bash ./scripts/train_1024p_12G.sh`), which will crop the images during training. Performance is not guaranteed using this script.
 
 ### Training with your own dataset
 - If you want to train with your own dataset, please generate label maps which are one-channel whose pixel values correspond to the object labels (i.e. 0,1,...,N-1, where N is the number of labels). This is because we need to generate one-hot vectors from the label maps. Please also specity `--label_nc N` during both training and testing.
@@ -185,6 +129,60 @@ python s_1.py --enable_affine_registration --enable_color_normalization
 If `train_A` and `train_B` (or `test_A` and `test_B`) filenames do not match, the script automatically switches to unpaired folder-wise reference mode.
 
 Use this script when additional vertical cropping is needed for the A-type images in the dataset.
+
+# CityScapes Dataset Usage
+
+### Testing
+- A few example Cityscapes test images are included in the `datasets` folder.
+- Please download the pre-trained Cityscapes model from [here](https://drive.google.com/file/d/1OR-2aEPHOxZKuoOV34DvQxreqGCSLcW9/view?usp=drive_link) (google drive link), and put it under `./checkpoints/label2city_1024p/`
+- Test the model (`bash ./scripts/test_1024p.sh`):
+```bash
+#!./scripts/test_1024p.sh
+python test.py --name label2city_1024p --netG local --ngf 32 --resize_or_crop none
+```
+The test results will be saved to a html file here: `./results/label2city_1024p/test_latest/index.html`.
+
+More example scripts can be found in the `scripts` directory.
+
+
+### Dataset
+- We use the Cityscapes dataset. To train a model on the full dataset, please download it from the [official website](https://www.cityscapes-dataset.com/) (registration required).
+After downloading, please put it under the `datasets` folder in the same way the example images are provided.
+
+
+### Training
+- Train a model at 1024 x 512 resolution (`bash ./scripts/train_512p.sh`):
+```bash
+#!./scripts/train_512p.sh
+python train.py --name label2city_512p
+```
+- To view training results, please checkout intermediate results in `./checkpoints/label2city_512p/web/index.html`.
+If you have tensorflow installed, you can see tensorboard logs in `./checkpoints/label2city_512p/logs` by adding `--tf_log` to the training scripts.
+- At the end of training, additional monitoring artifacts are saved to `./checkpoints/<run_name>/metrics/`:
+  - `loss_history.csv` (structured loss history including `G_GAN`, `G_GAN_Feat`, `G_VGG`, `G_SSIM`, `G_GradVar`, `D_real`, `D_fake`, plus derived metrics)
+  - `loss_curves.png` and `d_balance.png` (loss and discriminator-balance plots)
+  - `training_summary.txt` and `best_step.json` (heuristic best-step summary and metadata)
+
+### Multi-GPU training
+- Train a model using multiple GPUs (`bash ./scripts/train_512p_multigpu.sh`):
+```bash
+#!./scripts/train_512p_multigpu.sh
+python train.py --name label2city_512p --batchSize 8 --gpu_ids 0,1,2,3,4,5,6,7
+```
+Note: this is not tested and we trained our model using single GPU only. Please use at your own discretion.
+
+### Training with Automatic Mixed Precision (AMP) for faster speed
+- To train with mixed precision support, please first install apex from: https://github.com/NVIDIA/apex
+- You can then train the model by adding `--fp16`. For example,
+```bash
+#!./scripts/train_512p_fp16.sh
+python -m torch.distributed.launch train.py --name label2city_512p --fp16
+```
+In our test case, it trains about 80% faster with AMP on a Volta machine.
+
+### Training at full resolution
+- To train the images at full resolution (2048 x 1024) requires a GPU with 24G memory (`bash ./scripts/train_1024p_24G.sh`), or 16G memory if using mixed precision (AMP).
+- If only GPUs with 12G memory are available, please use the 12G script (`bash ./scripts/train_1024p_12G.sh`), which will crop the images during training. Performance is not guaranteed using this script.
 
 
 
