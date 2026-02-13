@@ -153,7 +153,7 @@ class LocalEnhancer(nn.Module):
             ### residual blocks
             model_upsample = []
             if self.use_attention:
-                model_upsample += [SelfAttention(ngf_global * 2)]
+                model_upsample += [EfficientChannelAttention(ngf_global * 2)]
             for i in range(n_blocks_local):
                 model_upsample += [ResnetBlock(ngf_global * 2, padding_type=padding_type, norm_layer=norm_layer)]
 
@@ -261,6 +261,38 @@ class ResnetBlock(nn.Module):
     def forward(self, x):
         out = x + self.conv_block(x)
         return out
+
+import math
+
+class EfficientChannelAttention(nn.Module):
+    def __init__(self, in_channels, gamma=2, b=1):
+        super(EfficientChannelAttention, self).__init__()
+        # Formula from ECA-Net paper (Eq. 11) to calculate adaptive kernel size
+        # t = |(log2(C) + b) / gamma|
+        t = int(abs((math.log(in_channels, 2) + b) / gamma))
+        # Enforce odd kernel size
+        k_size = t if t % 2 else t + 1
+        
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        # 1D Conv acts on (Batch, 1, Channels)
+        self.conv = nn.Conv1d(1, 1, kernel_size=k_size, padding=(k_size - 1) // 2, bias=False)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        # x: [Batch, Channels, Height, Width]
+        y = self.avg_pool(x) # [B, C, 1, 1]
+        
+        # View as [B, 1, C] for 1D convolution
+        # We process 'Channels' as the sequence dimension
+        y = y.squeeze(-1).permute(0, 2, 1) 
+        
+        y = self.conv(y) # [B, 1, C]
+        y = self.sigmoid(y) # [B, 1, C]
+        
+        # Restore view to [B, C, 1, 1] to multiply with original x
+        y = y.permute(0, 2, 1).unsqueeze(-1)
+        
+        return x * y.expand_as(x)
 
 class SelfAttention(nn.Module):
     def __init__(self, in_dim):

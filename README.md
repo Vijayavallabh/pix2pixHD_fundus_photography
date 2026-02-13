@@ -34,7 +34,7 @@ CUDA_VISIBLE_DEVICES=0 nohup python train.py --dataroot ./datasets/eye_cropped_1
 ```
 - Train [Finetune with 2k Resolution]
 ```bash
-CUDA_VISIBLE_DEVICES=3,5 nohup python -m torch.distributed.launch train.py --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1_2k --load_pretrain checkpoints/EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 2048 --fineSize 2048 --batchSize 2 --niter 50 --niter_decay 50 --niter_fix_global 10 --netG local --ngf 32 --num_D 3 --max_dataset_size 12 --use_attention --gpu_ids 0,1 > out_fund_train_1_2k.log 2>&1&
+CUDA_VISIBLE_DEVICES=3,5 nohup python -m torch.distributed.launch train.py --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1_2k --load_pretrain checkpoints/EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 2048 --fineSize 2048 --batchSize 4 --niter 50 --niter_decay 50 --niter_fix_global 10 --netG local --ngf 32 --num_D 3 --max_dataset_size 12 --use_attention --gpu_ids 0,1 > out_fund_train_1_2k.log 2>&1&
 ```
 - Test:
 ```bash
@@ -90,6 +90,7 @@ If `train_A` and `train_B` (or `test_A` and `test_B`) filenames do not match, th
 
 Use this script when additional vertical cropping is needed for the A-type images in the dataset.
 
+The repo already has images with optional geometric/color postprocessing and without as well.
 # CityScapes Dataset Usage
 
 ### Testing
