@@ -7,7 +7,7 @@ from torch.autograd import Variable
 import torch.nn as nn
 
 opt = TrainOptions().parse()
-opt.nThreads = 1
+opt.nThreads = max(0, int(opt.nThreads))
 opt.batchSize = 1 
 opt.serial_batches = True 
 opt.no_flip = True

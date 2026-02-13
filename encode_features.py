@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 opt = TrainOptions().parse()
-opt.nThreads = 1
+opt.nThreads = max(0, int(opt.nThreads))
 opt.batchSize = 1 
 opt.serial_batches = True 
 opt.no_flip = True
