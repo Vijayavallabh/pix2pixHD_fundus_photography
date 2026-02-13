@@ -399,7 +399,7 @@ def _build_arg_parser():
     parser = argparse.ArgumentParser()
     base_dir = Path(__file__).resolve().parent
     parser.add_argument('--dataset_dir', type=Path, default=base_dir / 'datasets' / 'eye')
-    parser.add_argument('--output_dir', type=Path, default=base_dir / 'datasets' / 'eye_cropped_1')
+    parser.add_argument('--output_dir', type=Path, default=base_dir / 'datasets' / 'eye_cropped_1_no_geometric')
     parser.add_argument('--threshold', type=int, default=10)
     parser.add_argument('--trim_top_pixels_a', type=int, default=110)
     parser.add_argument('--trim_bottom_pixels_a', type=int, default=115)
