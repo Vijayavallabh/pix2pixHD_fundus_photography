@@ -29,6 +29,9 @@ class BaseOptions():
         self.parser.add_argument('--label_nc', type=int, default=35, help='# of input label channels')
         self.parser.add_argument('--input_nc', type=int, default=3, help='# of input image channels')
         self.parser.add_argument('--output_nc', type=int, default=3, help='# of output image channels')
+        self.parser.add_argument('--use_segmentation_mask_channel', action='store_true', help='append paired segmentation mask as last channel for both input/output images (label_nc must be 0)')
+        self.parser.add_argument('--mask_dataroot', type=str, default='', help='root directory for masks. defaults to <dataroot>_mask when empty')
+        self.parser.add_argument('--mask_suffix', type=str, default='_mask', help='suffix used by mask files, e.g. image_01_mask.png -> _mask')
 
         # for setting inputs
         self.parser.add_argument('--dataroot', type=str, default='./datasets/cityscapes/') 
@@ -102,6 +105,16 @@ class BaseOptions():
             id = int(str_id)
             if id >= 0:
                 self.opt.gpu_ids.append(id)
+
+        if self.opt.use_segmentation_mask_channel:
+            if self.opt.label_nc != 0:
+                raise ValueError('--use_segmentation_mask_channel is only supported when --label_nc 0.')
+            if self.opt.input_nc == 3:
+                self.opt.input_nc = 4
+            if self.opt.output_nc == 3:
+                self.opt.output_nc = 4
+            if self.opt.input_nc != self.opt.output_nc:
+                raise ValueError('When --use_segmentation_mask_channel is enabled, --input_nc and --output_nc must match.')
         
         # set gpu ids
         if len(self.opt.gpu_ids) > 0:

@@ -27,22 +27,50 @@ uv pip install -r requirements.txt
 - If you don't have instance maps or don't want to use them, please specify `--no_instance`.
 - The default setting for preprocessing is `scale_width`, which will scale the width of all training images to `opt.loadSize` (1024) while keeping the aspect ratio. If you want a different setting, please change it by using the `--resize_or_crop` option. For example, `scale_width_and_crop` first resizes the image to have width `opt.loadSize` and then does random cropping of size `(opt.fineSize, opt.fineSize)`. `crop` skips the resizing step and only performs random cropping. If you don't want any preprocessing, please specify `none`, which will do nothing other than making sure the image is divisible by 32.
 
+### Training with segmentation mask as the last image channel (4-channel mode)
+
+This repo supports appending vessel segmentation masks as channel 4 for both A and B after the same geometric transforms (`resize_and_crop`, `fineSize`, flips, rotations).
+
+- Enable with: `--use_segmentation_mask_channel`
+- Point mask root with: `--mask_dataroot <path>`
+  - If omitted, default is `<dataroot>_mask`
+- Mask filename suffix (default): `--mask_suffix _mask`
+  - Example pairing: `img123.png` ↔ `img123_mask.png`
+- This mode requires `--label_nc 0`.
+
+Expected folder layout example:
+
+```text
+datasets/
+  eye_cropped_1/
+    train_A/ train_B/ test_A/ test_B/
+  eye_cropped_1_mask/
+    train_A/ train_B/ test_A/ test_B/
+```
+
+Loss behavior in 4-channel mode:
+- `G_VGG`, `G_SSIM`, `G_GradVar` are computed on RGB channels only.
+- New mask supervision term `G_Mask` is computed on channel 4.
+- Configure with:
+  - `--mask_loss_type {bce,l1}` (default `bce`)
+  - `--lambda_mask <float>` (default `5.0`)
+
 # Example commands for `datasets/eye_cropped_1`
 - Train:
 ```bash
-CUDA_VISIBLE_DEVICES=0 nohup python train.py --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1  --max_dataset_size 12 --use_attention --nThreads 0 > out_fund_train_1.log 2>&1&
+CUDA_VISIBLE_DEVICES=0 nohup python train.py --dataroot ./datasets/eye_cropped_1 --mask_dataroot ./datasets/eye_cropped_1_mask --use_segmentation_mask_channel --mask_loss_type bce --lambda_mask 5.0 --name EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1 --max_dataset_size 12 --use_attention --nThreads 0 > out_fund_train_1.log 2>&1&
 ```
 - Train [Finetune with 2k Resolution]
 ```bash
-CUDA_VISIBLE_DEVICES=3,5 nohup python -m torch.distributed.launch train.py --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1_2k --load_pretrain checkpoints/EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 2048 --fineSize 2048 --batchSize 4 --niter 50 --niter_decay 50 --niter_fix_global 10 --netG local --ngf 32 --num_D 3 --max_dataset_size 12 --use_attention --gpu_ids 0,1 > out_fund_train_1_2k.log 2>&1&
+CUDA_VISIBLE_DEVICES=3,4 nohup torchrun --nproc_per_node=2 --master_port=29995 train.py --dataroot ./datasets/eye_cropped_1 --mask_dataroot ./datasets/eye_cropped_1_mask --use_segmentation_mask_channel --mask_loss_type bce --lambda_mask 5.0 --name EYE_fund_train_1_2k --load_pretrain checkpoints/EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 2048 --fineSize 2048 --batchSize 2 --niter 80 --niter_decay 80 --niter_fix_global 20 --lr 0.00002 --netG local --ngf 64 --aug_noise_std 0.05 --num_D 3 --max_dataset_size 12 --use_attention --gpu_ids 0,1 > out_fund_train_1_2k.log 2>&1&
 ```
 - Test:
 ```bash
-CUDA_VISIBLE_DEVICES=0 nohup python test.py --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1  --use_attention --nThreads 0 > out_test_fund_1.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0 nohup python test.py --dataroot ./datasets/eye_cropped_1 --mask_dataroot ./datasets/eye_cropped_1_mask --use_segmentation_mask_channel --name EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1 --use_attention --nThreads 0 > out_test_fund_1.log 2>&1 &
 ```
 - Compute PSNR:
 ```bash
-CUDA_VISIBLE_DEVICES=0 nohup python compute_psnr.py --phases test --dataroot ./datasets/eye_cropped_1 --name EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1 --use_attention --nThreads 0 > out_psnr_fund_1.log 2>&1 &
+CUDA_VISIBLE_DEVICES=0 nohup python compute_psnr.py --phases test --dataroot ./datasets/eye_cropped_1 --mask_dataroot ./datasets/eye_cropped_1_mask --use_segmentation_mask_channel --name EYE_fund_train_1 --label_nc 0 --no_instance --resize_or_crop resize_and_crop --loadSize 1024 --fineSize 1024 --batchSize 1 --use_attention --nThreads 0 > out_psnr_fund_1.log 2>&1 &
 ```
 
 Training augmentation is restricted to: horizontal flip, vertical flip, rotation (`--aug_rotate`), contrast adjustment (`--aug_contrast`), and Gaussian noise injection (`--aug_noise_std`). Use `--no_augment` to disable augmentation entirely.
@@ -115,7 +143,7 @@ python train.py --name label2city_512p
 - To view training results, please checkout intermediate results in `./checkpoints/label2city_512p/web/index.html`.
 If you have tensorflow installed, you can see tensorboard logs in `./checkpoints/label2city_512p/logs` by adding `--tf_log` to the training scripts.
 - At the end of training, additional monitoring artifacts are saved to `./checkpoints/<run_name>/metrics/`:
-  - `loss_history.csv` (structured loss history including `G_GAN`, `G_GAN_Feat`, `G_VGG`, `G_SSIM`, `G_GradVar`, `D_real`, `D_fake`, plus derived metrics)
+  - `loss_history.csv` (structured loss history including `G_GAN`, `G_GAN_Feat`, `G_VGG`, `G_SSIM`, `G_GradVar`, `G_Mask` (when enabled), `D_real`, `D_fake`, plus derived metrics)
   - `loss_curves.png` and `d_balance.png` (loss and discriminator-balance plots)
   - `training_summary.txt` and `best_step.json` (heuristic best-step summary and metadata)
 

@@ -12,10 +12,24 @@ class Pix2PixHDModel(BaseModel):
         return 'Pix2PixHDModel'
     
     def init_loss_filter(self, use_gan_feat_loss, use_vgg_loss):
-        flags = (True, use_gan_feat_loss, use_vgg_loss, True, True, True, True)
-        def loss_filter(g_gan, g_gan_feat, g_vgg, g_ssim, g_grad_var, d_real, d_fake):
-            return [l for (l,f) in zip((g_gan, g_gan_feat, g_vgg, g_ssim, g_grad_var, d_real, d_fake), flags) if f]
+        flags = (True, use_gan_feat_loss, use_vgg_loss, True, True, True, True, True)
+        def loss_filter(g_gan, g_gan_feat, g_vgg, g_ssim, g_grad_var, g_mask, d_real, d_fake):
+            return [l for (l,f) in zip((g_gan, g_gan_feat, g_vgg, g_ssim, g_grad_var, g_mask, d_real, d_fake), flags) if f]
         return loss_filter
+
+    def _rgb_view(self, tensor):
+        if tensor is None:
+            return None
+        if tensor.size(1) >= 3:
+            return tensor[:, :3, :, :]
+        return tensor
+
+    def _mask_view(self, tensor):
+        if tensor is None:
+            return None
+        if tensor.size(1) >= 4:
+            return tensor[:, 3:4, :, :]
+        return None
 
     def compute_ssim_loss(self, fake_image, real_image):
         c1 = 0.01 ** 2
@@ -53,6 +67,8 @@ class Pix2PixHDModel(BaseModel):
         self.isTrain = opt.isTrain
         self.use_features = opt.instance_feat or opt.label_feat
         self.gen_features = self.use_features and not self.opt.load_features
+        self.use_mask_channel = bool(getattr(opt, 'use_segmentation_mask_channel', False))
+        self.mask_loss_type = getattr(opt, 'mask_loss_type', 'bce')
         input_nc = opt.label_nc if opt.label_nc != 0 else opt.input_nc
 
         ##### define networks        
@@ -104,12 +120,14 @@ class Pix2PixHDModel(BaseModel):
             
             self.criterionGAN = networks.GANLoss(use_lsgan=not opt.no_lsgan, tensor=self.Tensor)   
             self.criterionFeat = torch.nn.L1Loss()
+            self.criterionMaskBCE = torch.nn.BCELoss()
+            self.criterionMaskL1 = torch.nn.L1Loss()
             if not opt.no_vgg_loss:             
                 self.criterionVGG = networks.VGGLoss(self.gpu_ids)
                 
         
             # Names so we can breakout loss
-            self.loss_names = self.loss_filter('G_GAN', 'G_GAN_Feat', 'G_VGG', 'G_SSIM', 'G_GradVar', 'D_real', 'D_fake')
+            self.loss_names = self.loss_filter('G_GAN', 'G_GAN_Feat', 'G_VGG', 'G_SSIM', 'G_GradVar', 'G_Mask', 'D_real', 'D_fake')
 
             # initialize optimizers
             # optimizer G
@@ -218,16 +236,31 @@ class Pix2PixHDModel(BaseModel):
         # VGG feature matching loss
         loss_G_VGG = 0
         if not self.opt.no_vgg_loss:
-            loss_G_VGG = self.criterionVGG(fake_image, real_image) * self.opt.lambda_feat
+            fake_for_vgg = self._rgb_view(fake_image)
+            real_for_vgg = self._rgb_view(real_image)
+            loss_G_VGG = self.criterionVGG(fake_for_vgg, real_for_vgg) * self.opt.lambda_feat
 
         # SSIM loss
-        loss_G_SSIM = self.compute_ssim_loss(fake_image, real_image)
+        loss_G_SSIM = self.compute_ssim_loss(self._rgb_view(fake_image), self._rgb_view(real_image))
 
         # Gradient variance loss
-        loss_G_GradVar = self.compute_gradient_variance_loss(fake_image, real_image)
+        loss_G_GradVar = self.compute_gradient_variance_loss(self._rgb_view(fake_image), self._rgb_view(real_image))
+
+        # Mask loss on the dedicated last channel when enabled
+        loss_G_Mask = 0
+        if self.use_mask_channel:
+            fake_mask = self._mask_view(fake_image)
+            real_mask = self._mask_view(real_image)
+            if fake_mask is not None and real_mask is not None:
+                fake_prob = torch.clamp((fake_mask + 1.0) * 0.5, 0.0, 1.0)
+                real_prob = torch.clamp((real_mask + 1.0) * 0.5, 0.0, 1.0)
+                if self.mask_loss_type == 'l1':
+                    loss_G_Mask = self.criterionMaskL1(fake_prob, real_prob)
+                else:
+                    loss_G_Mask = self.criterionMaskBCE(fake_prob, real_prob)
         
         # Only return the fake_B image if necessary to save BW
-        return [ self.loss_filter(loss_G_GAN, loss_G_GAN_Feat, loss_G_VGG, loss_G_SSIM, loss_G_GradVar, loss_D_real, loss_D_fake), None if not infer else fake_image ]
+        return [ self.loss_filter(loss_G_GAN, loss_G_GAN_Feat, loss_G_VGG, loss_G_SSIM, loss_G_GradVar, loss_G_Mask, loss_D_real, loss_D_fake), None if not infer else fake_image ]
 
     def inference(self, label, inst, image=None):
         # Encode Inputs        

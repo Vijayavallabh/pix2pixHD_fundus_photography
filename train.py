@@ -165,6 +165,7 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
             + loss_dict.get('G_VGG', 0)
             + opt.lambda_ssim * loss_dict.get('G_SSIM', 0)
             + opt.lambda_gradvar * loss_dict.get('G_GradVar', 0)
+            + opt.lambda_mask * loss_dict.get('G_Mask', 0)
         )
 
         ############### Backward Pass ####################
