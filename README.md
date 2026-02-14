@@ -82,15 +82,10 @@ To run the script:
 python s_1.py
 ```
 
-Optional geometric/color postprocessing:
-```bash
-python s_1.py --enable_affine_registration --enable_color_normalization
-```
 If `train_A` and `train_B` (or `test_A` and `test_B`) filenames do not match, the script automatically switches to unpaired folder-wise reference mode.
 
 Use this script when additional vertical cropping is needed for the A-type images in the dataset.
 
-The repo already has images with optional geometric/color postprocessing and without as well.
 # CityScapes Dataset Usage
 
 ### Testing

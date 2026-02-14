@@ -260,153 +260,15 @@ def process_eye_dataset(
         )
 
 
-def _load_rgb_uint8(path):
-    with Image.open(path) as img:
-        return np.array(img.convert('RGB'), dtype=np.uint8)
-
-
-def _save_rgb_uint8(path, arr):
-    Image.fromarray(arr.astype(np.uint8), mode='RGB').save(path)
-
-
-def _affine_register_rgb(moving_rgb, fixed_rgb, number_of_iterations=300, termination_eps=1e-6):
-    fixed_gray = cv2.cvtColor(fixed_rgb, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255.0
-    moving_gray = cv2.cvtColor(moving_rgb, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255.0
-
-    warp_matrix = np.eye(2, 3, dtype=np.float32)
-    criteria = (
-        cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT,
-        int(number_of_iterations),
-        float(termination_eps),
-    )
-
-    try:
-        cv2.findTransformECC(
-            fixed_gray,
-            moving_gray,
-            warp_matrix,
-            cv2.MOTION_AFFINE,
-            criteria,
-        )
-        height, width = fixed_rgb.shape[:2]
-        registered = cv2.warpAffine(
-            moving_rgb,
-            warp_matrix,
-            (width, height),
-            flags=cv2.INTER_LINEAR + cv2.WARP_INVERSE_MAP,
-            borderMode=cv2.BORDER_REFLECT,
-        )
-        return registered
-    except cv2.error:
-        return moving_rgb
-
-
-def _match_color_lab(source_rgb, reference_rgb):
-    source_lab = cv2.cvtColor(source_rgb, cv2.COLOR_RGB2LAB).astype(np.float32)
-    reference_lab = cv2.cvtColor(reference_rgb, cv2.COLOR_RGB2LAB).astype(np.float32)
-
-    src_mean = source_lab.reshape(-1, 3).mean(axis=0)
-    src_std = source_lab.reshape(-1, 3).std(axis=0)
-    ref_mean = reference_lab.reshape(-1, 3).mean(axis=0)
-    ref_std = reference_lab.reshape(-1, 3).std(axis=0)
-
-    adjusted = (source_lab - src_mean) * (ref_std / (src_std + 1e-6)) + ref_mean
-    adjusted = np.clip(adjusted, 0, 255).astype(np.uint8)
-    return cv2.cvtColor(adjusted, cv2.COLOR_LAB2RGB)
-
-
-def apply_pairwise_postprocessing(
-    output_dir,
-    enable_affine_registration=False,
-    enable_color_normalization=False,
-    ecc_iterations=300,
-    ecc_termination_eps=1e-6,
-):
-    if not enable_affine_registration and not enable_color_normalization:
-        return
-
-    def _process_folder_unpaired(folder_path):
-        files = sorted([p for p in folder_path.iterdir() if p.is_file()])
-        if not files:
-            return 0
-
-        reference_path = files[0]
-        reference_rgb = _load_rgb_uint8(reference_path)
-        processed = 0
-
-        for image_path in files:
-            image_rgb = _load_rgb_uint8(image_path)
-
-            if enable_affine_registration and image_path != reference_path:
-                image_rgb = _affine_register_rgb(
-                    image_rgb,
-                    reference_rgb,
-                    number_of_iterations=ecc_iterations,
-                    termination_eps=ecc_termination_eps,
-                )
-
-            if enable_color_normalization:
-                image_rgb = _match_color_lab(image_rgb, reference_rgb)
-
-            _save_rgb_uint8(image_path, image_rgb)
-            processed += 1
-
-        return processed
-
-    output_path = Path(output_dir)
-    for split in ['train', 'test']:
-        split_A = output_path / f'{split}_A'
-        split_B = output_path / f'{split}_B'
-
-        if not split_A.exists() or not split_B.exists():
-            continue
-
-        a_files = {p.name: p for p in split_A.iterdir() if p.is_file()}
-        b_files = {p.name: p for p in split_B.iterdir() if p.is_file()}
-        common_names = sorted(set(a_files.keys()) & set(b_files.keys()))
-
-        print(f"\n=== Postprocess {split} (matched pairs: {len(common_names)}) ===")
-
-        if not common_names:
-            print("No filename-matched A/B pairs found; using unpaired folder-wise reference mode.")
-            processed_a = _process_folder_unpaired(split_A)
-            processed_b = _process_folder_unpaired(split_B)
-            print(f"Processed unpaired images: {split}_A={processed_a}, {split}_B={processed_b}")
-            continue
-
-        for name in common_names:
-            a_path = a_files[name]
-            b_path = b_files[name]
-
-            fixed_a = _load_rgb_uint8(a_path)
-            moving_b = _load_rgb_uint8(b_path)
-
-            if enable_affine_registration:
-                moving_b = _affine_register_rgb(
-                    moving_b,
-                    fixed_a,
-                    number_of_iterations=ecc_iterations,
-                    termination_eps=ecc_termination_eps,
-                )
-
-            if enable_color_normalization:
-                moving_b = _match_color_lab(moving_b, fixed_a)
-
-            _save_rgb_uint8(b_path, moving_b)
-
 
 def _build_arg_parser():
     parser = argparse.ArgumentParser()
     base_dir = Path(__file__).resolve().parent
     parser.add_argument('--dataset_dir', type=Path, default=base_dir / 'datasets' / 'eye')
-    parser.add_argument('--output_dir', type=Path, default=base_dir / 'datasets' / 'eye_cropped_1_no_geometric')
+    parser.add_argument('--output_dir', type=Path, default=base_dir / 'datasets' / 'eye_cropped_1')
     parser.add_argument('--threshold', type=int, default=10)
     parser.add_argument('--trim_top_pixels_a', type=int, default=110)
     parser.add_argument('--trim_bottom_pixels_a', type=int, default=115)
-    parser.add_argument('--enable_affine_registration', action='store_true')
-    parser.add_argument('--enable_color_normalization', action='store_true')
-    parser.add_argument('--ecc_iterations', type=int, default=300)
-    parser.add_argument('--ecc_termination_eps', type=float, default=1e-6)
     return parser
 
 
@@ -418,11 +280,4 @@ if __name__ == '__main__':
         threshold=args.threshold,
         trim_top_pixels_a=args.trim_top_pixels_a,
         trim_bottom_pixels_a=args.trim_bottom_pixels_a,
-    )
-    apply_pairwise_postprocessing(
-        args.output_dir,
-        enable_affine_registration=args.enable_affine_registration,
-        enable_color_normalization=args.enable_color_normalization,
-        ecc_iterations=args.ecc_iterations,
-        ecc_termination_eps=args.ecc_termination_eps,
     )
